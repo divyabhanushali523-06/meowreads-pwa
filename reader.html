@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cozy-pink">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeowReads - eBook Reader</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #FAF4F5; color: #4A3E3D; height: 100vh; display: flex; flex-direction: column; }
+
+        /* Top Toolbar */
+        .reader-header {
+            background: #FFFFFF;
+            border-bottom: 1px solid #F0CFD8;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .reader-title { font-size: 18px; font-weight: 700; }
+        .toolbar-actions { display: flex; align-items: center; gap: 10px; }
+
+        /* Main Reading Area Layout */
+        .reader-body { display: flex; flex: 1; overflow: hidden; }
+
+        /* Chapter / Bookmark Sidebar */
+        .reader-sidebar {
+            width: 260px;
+            background: #FFFFFF;
+            border-right: 1px solid #F0CFD8;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .sidebar-section h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 8px; }
+        .sidebar-list { list-style: none; }
+        .sidebar-list li {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .sidebar-list li:hover { background: #FBDBE2; }
+        .sidebar-list li.active { background: #FBDBE2; font-weight: 700; }
+
+        /* Book Content Container */
+        .reader-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .page-paper {
+            background: #FFFFFF;
+            border: 1px solid #F0CFD8;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            max-width: 700px;
+            width: 100%;
+            min-height: 500px;
+            padding: 40px;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        /* Bottom Controls Footer */
+        .reader-footer {
+            background: #FFFFFF;
+            border-top: 1px solid #F0CFD8;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #F0CFD8;
+            background: #FFFFFF;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-sm.primary { background: #FBDBE2; border-color: #F7B2C4; }
+    </style>
+</head>
+<body>
+
+    <!-- Reader Header Toolbar -->
+    <header class="reader-header">
+        <button onclick="exitReader()" class="btn-sm" style="text-decoration: none; border: 1px solid #F0CFD8; background: #FFFFFF; cursor: pointer;">← Exit Reader</button>
+        <div class="reader-title" id="bookDisplayTitle">Loading Book...</div>
+        <div class="toolbar-actions">
+            <button class="btn-sm" onclick="toggleBookmark()">🔖 Bookmark</button>
+            <button class="btn-sm" onclick="downloadForOffline()">📥 Download Offline</button>
+        </div>
+    </header>
+
+    <!-- Reader Body Area -->
+    <div class="reader-body">
+        <!-- Sidebar Navigation -->
+        <aside class="reader-sidebar">
+            <div class="sidebar-section">
+                <h4>Chapters</h4>
+                <ul class="sidebar-list" id="chapterList"></ul>
+            </div>
+            <div class="sidebar-section">
+                <h4>Bookmarks</h4>
+                <ul class="sidebar-list" id="bookmarkList">
+                    <li style="color: #999; font-style: italic;">No bookmarks yet.</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <main class="reader-content">
+            <div class="page-paper">
+                <h3 id="chapterHeading" style="margin-bottom: 16px;">Chapter Loading...</h3>
+                <p id="pageText">Reading content loading...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Reader Navigation Footer -->
+    <footer class="reader-footer">
+        <button class="btn-sm" id="prevPageBtn" onclick="changePage(-1)">← Previous</button>
+        <span id="pageIndicator" style="font-weight: 600;">Page 1 of 1</span>
+        <button class="btn-sm primary" id="nextPageBtn" onclick="changePage(1)">Next →</button>
+    </footer>
+
+    <script>
+        // Sample Book Database with Chapters and Pages
+        const sampleBookData = {
+            "The Alchemist": {
+                chapters: [
+                    { title: "Prologue", pages: ["The alchemist picked up a book that someone in the caravan had brought. The book was lacking a cover, but he could identify its author..."] },
+                    { title: "Chapter 1: The Shepherd's Dream", pages: [
+                        "The boy's name was Santiago. Dusk was falling as the boy arrived with his herd at an abandoned church.",
+                        "He decided to spend the night there. He saw to it that all the sheep entered through the ruined gate, and then laid a few boards across it."
+                    ]},
+                    { title: "Chapter 2: The Treasure Quest", pages: [
+                        "When the boy had finished reading, he sat for a while thinking about the dream, and then decided to go to Tarifa to see a fortune teller.",
+                        "The old woman led the boy into a room at the back of her house; it was separated from her living room by a curtain of colored plastic beads."
+                    ]}
+                ]
+            }
+        };
+
+        let currentBookTitle = "The Alchemist";
+        let flatPages = [];
+        let currentPageIndex = 0;
+
+        function exitReader() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromSource = urlParams.get('from');
+            const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+
+            if (fromSource === 'writer' || userRole === 'writer' || userRole === 'admin') {
+                window.location.href = 'writer_dashboard.html';
+            } else {
+                window.location.href = 'user_dashboard.html';
+            }
+        }
+
+        function initReader() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedBook = urlParams.get('book');
+            if (requestedBook) currentBookTitle = decodeURIComponent(requestedBook);
+
+            document.getElementById('bookDisplayTitle').innerText = currentBookTitle;
+
+            const book = sampleBookData[currentBookTitle] || sampleBookData["The Alchemist"];
+            
+            // Flatten chapters into individual page objects
+            flatPages = [];
+            book.chapters.forEach((chap, chapIdx) => {
+                chap.pages.forEach((pageContent, pageInChapIdx) => {
+                    flatPages.push({
+                        chapterTitle: chap.title,
+                        chapterIndex: chapIdx,
+                        text: pageContent
+                    });
+                });
+            });
+
+            renderSidebar(book.chapters);
+            renderBookmarks();
+            renderPage();
+        }
+
+        function renderSidebar(chapters) {
+            const chapListEl = document.getElementById('chapterList');
+            chapListEl.innerHTML = '';
+            chapters.forEach((chap, idx) => {
+                const li = document.createElement('li');
+                li.innerText = chap.title;
+                li.onclick = () => jumpToChapter(idx);
+                chapListEl.appendChild(li);
+            });
+        }
+
+        function renderPage() {
+            const page = flatPages[currentPageIndex];
+            document.getElementById('chapterHeading').innerText = page.chapterTitle;
+            document.getElementById('pageText').innerText = page.text;
+            document.getElementById('pageIndicator').innerText = `Page ${currentPageIndex + 1} of ${flatPages.length}`;
+
+            document.getElementById('prevPageBtn').disabled = currentPageIndex === 0;
+            document.getElementById('nextPageBtn').disabled = currentPageIndex === flatPages.length - 1;
+        }
+
+        function changePage(delta) {
+            const targetIndex = currentPageIndex + delta;
+            if (targetIndex >= 0 && targetIndex < flatPages.length) {
+                currentPageIndex = targetIndex;
+                renderPage();
+            }
+        }
+
+        function jumpToChapter(chapIndex) {
+            const targetPageIndex = flatPages.findIndex(p => p.chapterIndex === chapIndex);
+            if (targetPageIndex !== -1) {
+                currentPageIndex = targetPageIndex;
+                renderPage();
+            }
+        }
+
+        function toggleBookmark() {
+            let bookmarks = JSON.parse(localStorage.getItem(`bookmarks_${currentBookTitle}`) || '[]');
+            const pageNum = currentPageIndex + 1;
+
+            if (!bookmarks.includes(pageNum)) {
+                bookmarks.push(pageNum);
+                localStorage.setItem(`bookmarks_${currentBookTitle}`, JSON.stringify(bookmarks));
+                alert(`Page ${pageNum} bookmarked!`);
+            } else {
+                alert(`Page ${pageNum} is already bookmarked.`);
+            }
+            renderBookmarks();
+        }
+
+        function renderBookmarks() {
+            const bookmarks = JSON.parse(localStorage.getItem(`bookmarks_${currentBookTitle}`) || '[]');
+            const listEl = document.getElementById('bookmarkList');
+            
+            if (bookmarks.length === 0) {
+                listEl.innerHTML = '<li style="color: #999; font-style: italic;">No bookmarks yet.</li>';
+                return;
+            }
+
+            listEl.innerHTML = '';
+            bookmarks.forEach(page => {
+                const li = document.createElement('li');
+                li.innerText = `🔖 Page ${page}`;
+                li.onclick = () => {
+                    currentPageIndex = page - 1;
+                    renderPage();
+                };
+                listEl.appendChild(li);
+            });
+        }
+
+        function downloadForOffline() {
+            let downloaded = JSON.parse(localStorage.getItem('downloadedBooks') || '[]');
+            if (!downloaded.includes(currentBookTitle)) {
+                downloaded.push(currentBookTitle);
+                localStorage.setItem('downloadedBooks', JSON.stringify(downloaded));
+            }
+            alert(`"${currentBookTitle}" has been saved for offline reading!`);
+        }
+
+        document.addEventListener('DOMContentLoaded', initReader);
+    </script>
+</body>
+</html>

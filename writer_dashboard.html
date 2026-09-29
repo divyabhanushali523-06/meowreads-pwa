@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cozy-pink">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow Reads - Writer & Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        :root {
+            --primary-color: #fbdbe2;
+            --accent-color: #e06d88;
+            --bg-color: #fff0f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #f0cfd8;
+        }
+
+        [data-theme="cozy-blue"] {
+            --primary-color: #e3f2fd;
+            --accent-color: #42a5f5;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #bbdefb;
+        }
+
+        [data-theme="cozy-green"] {
+            --primary-color: #e8f5e9;
+            --accent-color: #66bb6a;
+            --bg-color: #f1f8f5;
+            --card-bg: #ffffff;
+            --text-color: #1b5e20;
+            --border-color: #c8e6c9;
+        }
+
+        [data-theme="cozy-dark"] {
+            --primary-color: #2b2b2b;
+            --accent-color: #ff79c6;
+            --bg-color: #181818;
+            --card-bg: #242424;
+            --text-color: #f8f8f2;
+            --border-color: #444444;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-card {
+            background: var(--card-bg, #fff);
+            padding: 24px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color, #f0cfd8);
+        }
+        .chart-card {
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #f0cfd8);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .book-horizontal-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+        }
+        .scroll-card {
+            min-width: 140px;
+            max-width: 140px;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #f0cfd8);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .scroll-card:hover {
+            transform: translateY(-3px);
+        }
+        .scroll-card img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* Form & Textarea Improvements */
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color, #f0cfd8);
+            background: var(--card-bg, #fff);
+            color: var(--text-color);
+            font-family: inherit;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(224, 109, 136, 0.15);
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 90px;
+        }
+        .file-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .file-input-wrapper input[type="file"] {
+            padding: 8px;
+            background: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Tabs & Badges */
+        .tab-pills {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        .pill.active {
+            background: var(--accent-color);
+            color: #fff;
+            border-color: var(--accent-color);
+        }
+        .badge-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Aesthetic Theme Picker */
+        .theme-selector-grid {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            align-items: center;
+        }
+        .theme-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+        .theme-option.active {
+            outline: 3px solid var(--accent-color);
+        }
+
+        /* Aesthetic Checkbox Toggle Switch */
+        .free-toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--primary-color);
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e06d88">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+<link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/616/616408.png">
+</head>
+<body class="dashboard-body">
+
+    <!-- Top Header Bar -->
+    <header class="app-header writer-header" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
+        <div class="header-brand" style="display: flex; align-items: center; gap: 8px;">
+            <span class="cat-logo" style="font-size: 24px;">✍️🐱</span>
+            <h2 style="margin: 0; font-family: 'Comfortaa', cursive;">Writer Studio</h2>
+        </div>
+    </header>
+
+    <main class="dashboard-content" style="padding: 16px;">
+
+        <!-- 1. HOME PAGE -->
+        <section id="wsection-home" class="dash-section active">
+            <h3 class="page-header">Welcome Back, <span id="adminDisplayName">Writer</span> 👋</h3>
+            
+            <h4 class="mt-16 mb-8">Your Published Books 📚</h4>
+            <div id="adminBooksList" class="book-horizontal-scroll">
+                <!-- Admin's books populated dynamically -->
+            </div>
+
+            <h4 class="mt-20 mb-8">Top 10 Trending Books 🔥</h4>
+            <div id="top10BooksList" class="vertical-list">
+                <!-- Top books populated dynamically -->
+            </div>
+
+            <h4 class="mt-20 mb-8">Recommended Books by Other Authors 🌟</h4>
+            <div id="recommendedBooksList" class="book-horizontal-scroll">
+                <!-- Recommended books populated dynamically -->
+            </div>
+        </section>
+
+        <!-- 2. CART SECTION -->
+        <section id="wsection-cart" class="dash-section" style="display:none;">
+            <h3 class="page-header">My Cart 🛒</h3>
+            <div id="cartItemsList" class="vertical-list">
+                <p>Your cart is empty.</p>
+            </div>
+            <div id="cartSummaryCard" style="display: none; background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 16px;">
+                <div style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 12px;">
+                    <span>Total Price:</span>
+                    <span id="cartTotalPrice">₹0</span>
+                </div>
+                <button class="btn primary-btn" onclick="checkoutCart()" style="width: 100%; padding: 12px; border-radius: 12px; background: var(--accent-color); color: #fff; border: none; font-weight: 600; cursor: pointer;">Proceed to Checkout 💳</button>
+            </div>
+        </section>
+
+        <!-- 3. LIBRARY SECTION -->
+        <section id="wsection-library" class="dash-section" style="display:none;">
+            <h3 class="page-header">My Library 📚</h3>
+            <div class="tab-pills">
+                <button class="pill active" onclick="filterLibrary('Purchased', this)">Purchased</button>
+                <button class="pill" onclick="filterLibrary('Rented', this)">Rented</button>
+                <button class="pill" onclick="filterLibrary('Downloaded', this)">Downloaded</button>
+            </div>
+            <div id="libraryBookList" class="vertical-list">
+                <!-- Library books rendered dynamically -->
+            </div>
+        </section>
+
+        <!-- 4. WRITERBOARD ANALYTICS -->
+        <section id="wsection-analytics" class="dash-section" style="display:none;">
+            <h3 class="page-header">Writerboard Analytics 📊</h3>
+            
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div class="stat-card" style="background: var(--card-bg); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
+                    <h4 id="statTotalReads" style="margin: 0;">1,240</h4>
+                    <p style="margin: 4px 0 0; font-size: 12px; color: #666;">Total Reads</p>
+                </div>
+                <div class="stat-card" style="background: var(--card-bg); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
+                    <h4 id="statTotalSales" style="margin: 0;">₹8,450</h4>
+                    <p style="margin: 4px 0 0; font-size: 12px; color: #666;">Total Sales</p>
+                </div>
+                <div class="stat-card" style="background: var(--card-bg); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
+                    <h4 id="statTotalLikes" style="margin: 0;">342</h4>
+                    <p style="margin: 4px 0 0; font-size: 12px; color: #666;">Likes</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h4>Book Sales Comparison (₹)</h4>
+                <canvas id="salesChart" width="400" height="220" style="max-width: 100%; margin-top: 10px;"></canvas>
+            </div>
+
+            <h4 class="mt-20 mb-12">Uploaded Books Performance</h4>
+            <div id="analyticsBooksList" class="vertical-list">
+                <!-- Detailed book breakdown cards populated by JS -->
+            </div>
+        </section>
+
+        <!-- 5. POST NEW BOOK -->
+        <section id="wsection-post" class="dash-section" style="display:none;">
+            <h3 class="page-header">Upload New Book 📖</h3>
+            <form id="uploadBookForm" class="auth-form" onsubmit="handlePostBook(event)">
+                <div class="form-group" style="margin-bottom: 12px;"><input type="text" id="postTitle" placeholder="Book Title" required class="form-control"></div>
+                <div class="form-group" style="margin-bottom: 12px;"><input type="text" id="postAuthor" placeholder="Author Name" required class="form-control"></div>
+                <div class="form-group" style="margin-bottom: 12px;"><input type="text" id="postCategory" placeholder="Category (e.g. Fantasy)" required class="form-control"></div>
+                <div class="form-group" style="margin-bottom: 12px;"><input type="number" id="postBuyPrice" placeholder="Buy Price (₹)" class="form-control"></div>
+                <div class="form-group" style="margin-bottom: 12px;"><input type="number" id="postRentPrice" placeholder="Rent Price (₹)" class="form-control"></div>
+                
+                <div class="form-group file-input-wrapper" style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; font-weight: 600;">Cover Image File / URL:</label>
+                    <input type="file" id="postCoverFile" accept="image/*" class="form-control" onchange="previewFileImage(this)">
+                    <input type="text" id="postCoverUrl" placeholder="Or paste Cover Image URL" class="form-control">
+                </div>
+
+                <div class="form-group file-input-wrapper" style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; font-weight: 600;">PDF Document File / URL:</label>
+                    <input type="file" id="postPdfFile" accept="application/pdf" class="form-control" onchange="previewFilePdf(this)">
+                    <input type="text" id="postPdfUrl" placeholder="Or paste PDF File URL" class="form-control">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <textarea id="postDescription" placeholder="Book Description / Synopsis" class="form-control" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn primary-btn mt-16" style="width: 100%; padding: 12px; border-radius: 12px; background: var(--accent-color); color: #fff; border: none; font-weight: 600; cursor: pointer;">Publish Book 🚀</button>
+            </form>
+        </section>
+
+        <!-- 6. MANAGE BOOKS -->
+        <section id="wsection-manage" class="dash-section" style="display:none;">
+            <h3 class="page-header">Manage Uploaded Books 🛠️</h3>
+            <div id="manageBooksList" class="vertical-list">
+                <!-- Managed books populated dynamically -->
+            </div>
+        </section>
+
+        <!-- 7. WRITER INBOX -->
+        <section id="wsection-inbox" class="dash-section" style="display:none;">
+            <h3 class="page-header">Writer Notifications 🔔</h3>
+            <div id="writerNotiFeed" class="vertical-list">
+                <!-- Notifications populated dynamically -->
+            </div>
+        </section>
+
+        <!-- 8. PROFILE PAGE -->
+        <section id="wsection-profile" class="dash-section" style="display:none;">
+            <h3 class="page-header">Writer Profile & Settings ⚙️</h3>
+            
+            <div class="profile-card text-center mb-20" style="background: var(--card-bg, #fff); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color, #f0cfd8); text-align: center;">
+                <div style="font-size: 48px;" id="profileAvatarDisplay">🐱</div>
+                <h4 id="profileUsernameDisplay" class="mt-8" style="margin: 8px 0 4px;">Admin Writer</h4>
+                <p class="text-muted" style="margin: 0; color: #777; font-size: 13px;">Writer & Content Creator</p>
+            </div>
+
+            <form onsubmit="saveProfileSettings(event)" class="auth-form mb-20">
+                <div class="form-group">
+                    <label><strong>Username:</strong></label>
+                    <input type="text" id="editUsernameInput" value="Admin Writer" class="form-control" required style="margin-top: 6px;">
+                </div>
+                <button onclick="handleWriterLogout()" style="width: 100%; margin-top: 12px; padding: 12px; background-color: #ff4d4d; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+    🚪 Logout Account
+</button>
+
+                <div class="form-group mt-12" style="margin-top: 12px;">
+                    <label><strong>Avatar Emoji:</strong></label>
+                    <select id="editAvatarSelect" class="form-control" style="margin-top: 6px;" onchange="document.getElementById('profileAvatarDisplay').innerText = this.value">
+                        <option value="🐱">🐱 Cozy Cat</option>
+                        <option value="✍️">✍️ Author Pen</option>
+                        <option value="🦁">🦁 Brave Lion</option>
+                        <option value="🦊">🦊 Creative Fox</option>
+                    </select>
+                </div>
+
+                <div class="form-group mt-12" style="margin-top: 16px;">
+                    <label><strong>Choose Theme:</strong></label>
+                    <div class="theme-selector-grid">
+                        <span class="theme-option" style="background: #fbdbe2;" onclick="setTheme('cozy-pink', this)"></span>
+                        <span class="theme-option" style="background: #e3f2fd;" onclick="setTheme('cozy-blue', this)"></span>
+                        <span class="theme-option" style="background: #e8f5e9;" onclick="setTheme('cozy-green', this)"></span>
+                        <span class="theme-option" style="background: #222222;" onclick="setTheme('cozy-dark', this)"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn primary-btn mt-16" style="width:100%; margin-top: 20px; padding: 12px; border-radius: 12px; background: var(--accent-color); color: #fff; border: none; font-weight: 600; cursor: pointer;">Save Profile Settings 💾</button>
+            </form>
+
+            <div class="profile-card" style="background: var(--card-bg, #fff); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color, #f0cfd8); margin-top: 20px;">
+                <h4 style="margin: 0 0 8px;">About Meow Reads 🐾</h4>
+                <p style="font-size: 14px; color: #666; margin: 0; line-height: 1.6;">
+                    Meow Reads is a modern digital reading and publishing studio. Writers can publish, manage pricing, and track royalties in real-time, while readers enjoy cozy ambient reading experiences.
+                </p>
+                <p style="font-size: 12px; color: #999; margin-top: 12px; margin-bottom: 0;">Version 2.4.0 • Built with ❤️ for Storytellers</p>
+            </div>
+           
+        </section>
+
+    </main>
+
+    <!-- EDIT BOOK MODAL -->
+    <div id="editBookModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="margin-top: 0;">Edit Book Details ✏️</h3>
+            <form onsubmit="saveBookEdits(event)" class="auth-form mt-16">
+                <input type="hidden" id="editBookId">
+                <div class="form-group" style="margin-bottom: 10px;"><label style="font-size: 12px; font-weight:600;">Title:</label><input type="text" id="editBookTitle" class="form-control" required></div>
+                <div class="form-group" style="margin-bottom: 10px;"><label style="font-size: 12px; font-weight:600;">Author:</label><input type="text" id="editBookAuthor" class="form-control" required></div>
+                <div class="form-group" style="margin-bottom: 10px;"><label style="font-size: 12px; font-weight:600;">Genre/Category:</label><input type="text" id="editBookCategory" class="form-control" required></div>
+                <div class="form-group" style="margin-bottom: 10px;"><label style="font-size: 12px; font-weight:600;">Buy Price (₹):</label><input type="number" id="editBookBuyPrice" class="form-control"></div>
+                <div class="form-group" style="margin-bottom: 10px;"><label style="font-size: 12px; font-weight:600;">Rent Price (₹):</label><input type="number" id="editBookRentPrice" class="form-control"></div>
+                
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; font-weight:600;">Description:</label>
+                    <textarea id="editBookDescription" class="form-control" rows="4"></textarea>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <div class="free-toggle-container" onclick="toggleFreeCheckbox()">
+                        <span style="font-weight: 600; font-size: 14px;">Set as Free Book 🎉</span>
+                        <label class="switch" onclick="event.stopPropagation();">
+                            <input type="checkbox" id="editBookIsFree" onchange="toggleFreeOption(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 16px;">
+                    <button type="submit" class="btn primary-btn" style="flex: 1; padding: 10px; border-radius: 10px; background: var(--accent-color); color: #fff; border: none; cursor: pointer;">Save Changes</button>
+                    <button type="button" class="btn outlined-btn" onclick="closeEditModal()" style="flex: 1; padding: 10px; border-radius: 10px; background: transparent; border: 1px solid var(--border-color); cursor: pointer;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW BOOK DETAILS MODAL -->
+    <div id="viewBookModal" class="modal-overlay">
+        <div class="modal-card">
+            <div style="display: flex; gap: 16px; align-items: flex-start;">
+                <img id="viewBookCover" src="" style="width: 110px; height: 160px; object-fit: cover; border-radius: 8px;">
+                <div>
+                    <h3 id="viewBookTitle" style="margin: 0 0 4px;">Book Title</h3>
+                    <p id="viewBookAuthor" style="margin: 0; color: #666; font-size: 14px;">Author</p>
+                    <span id="viewBookCategory" class="badge" style="background: var(--primary-color); display: inline-block; margin-top: 8px; font-size: 11px; padding: 2px 8px; border-radius: 6px;">Category</span>
+                    <div style="margin-top: 10px; font-weight: 600;">
+                        <span id="viewBookBuyPrice" style="color: var(--accent-color); margin-right: 8px;">₹0</span>
+                        <span id="viewBookRentPrice" style="font-size: 12px; color: #777;">Rent: ₹0</span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 16px;">
+                <h5 style="margin: 0 0 6px;">Description:</h5>
+                <p id="viewBookDescription" style="font-size: 13px; color: #555; line-height: 1.5; margin: 0;">Book description text will appear here.</p>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button id="viewBuyBtn" class="btn primary-btn" style="flex: 1; padding: 10px; border-radius: 10px; background: var(--accent-color); color: #fff; border: none; cursor: pointer;">Buy Book</button>
+                <button id="viewRentBtn" class="btn outlined-btn" style="flex: 1; padding: 10px; border-radius: 10px; background: transparent; border: 1px solid var(--border-color); cursor: pointer;">Rent Book</button>
+                <button id="viewCartBtn" class="btn outlined-btn" style="padding: 10px; border-radius: 10px; background: transparent; border: 1px solid var(--border-color); cursor: pointer;">🛒 Cart</button>
+            </div>
+            <button type="button" onclick="closeViewBookModal()" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: none; background: #eee; cursor: pointer;">Close</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar for Writers -->
+    <nav class="bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-around: space-around; align-items: center; z-index: 999;">
+        <button class="nav-item active" onclick="showWriterSection('home')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label" style="font-size: 11px;">Home</span>
+        </button>
+        <button class="nav-item" onclick="showWriterSection('cart')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">🛒</span>
+            <span class="nav-label" style="font-size: 11px;">Cart</span>
+        </button>
+        <button class="nav-item" onclick="showWriterSection('library')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label" style="font-size: 11px;">Library</span>
+        </button>
+        <button class="nav-item" onclick="showWriterSection('analytics')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label" style="font-size: 11px;">Analytics</span>
+        </button>
+        <button class="nav-item" onclick="showWriterSection('post')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">➕</span>
+            <span class="nav-label" style="font-size: 11px;">Post</span>
+        </button>
+        <button class="nav-item" onclick="showWriterSection('manage')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">🛠️</span>
+            <span class="nav-label" style="font-size: 11px;">Manage</span>
+        </button>
+        <button class="nav-item" onclick="showWriterSection('inbox')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">🔔</span>
+            <span class="nav-label" style="font-size: 11px;">Inbox</span>
+        </button>
+        <button class="nav-item" onclick="showWriterSection('profile')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label" style="font-size: 11px;">Profile</span>
+        </button>
+    </nav>
+
+    <script src="js/dashboard.js"></script>
+    <script>
+        const defaultBooks = [
+            { id: 'alchemist', title: 'The Alchemist', author: 'Paulo Coelho', category: 'Fiction', buyPrice: 299, rentPrice: 49, reads: 1240, sales: 8450, isFree: false, cover: 'https://m.media-amazon.com/images/I/71aFt4+OTOL._AC_UF1000,1000_QL80_.jpg', description: 'A fable about following your dream.', isAdmin: false },
+            { id: 'atomic-habits', title: 'Atomic Habits', author: 'James Clear', category: 'Self-Help', buyPrice: 399, rentPrice: 59, reads: 2150, sales: 12400, isFree: false, cover: 'https://m.media-amazon.com/images/I/81YkqyaFVEL._AC_UF1000,1000_QL80_.jpg', description: 'An easy and proven way to build good habits.', isAdmin: false },
+            { id: 'whispering-library', title: 'The Whispering Library', author: 'Admin Writer', category: 'Cozy Mystery', buyPrice: 349, rentPrice: 49, reads: 890, sales: 4500, isFree: false, cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400', description: 'A cozy mystery inside an ancient magic library.', isAdmin: true },
+            { id: 'my-first-novel', title: 'My First Novel', author: 'Admin Writer', category: 'Fantasy', buyPrice: 199, rentPrice: 29, reads: 350, sales: 1990, isFree: false, cover: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400', description: 'An epic adventure story.', isAdmin: true }
+        ];
+
+        const defaultNotifications = [
+            { icon: '🏆', title: 'Achievement Unlocked!', msg: '"The Whispering Library" entered the Top 10 Trending Books!', date: 'Today' },
+            { icon: '💰', title: 'New Purchase!', msg: '3 readers purchased "My First Novel" today.', date: 'Yesterday' },
+            { icon: '📢', title: 'Community Update', msg: 'Author James Clear uploaded a new chapter to Atomic Habits.', date: '3 days ago' }
+        ];
+
+        let uploadedCoverData = '';
+        let uploadedPdfData = '';
+        let currentLibraryFilter = 'Purchased';
+
+        function previewFileImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) { uploadedCoverData = e.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewFilePdf(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) { uploadedPdfData = e.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function initAdminStorage() {
+            if (!localStorage.getItem('adminBooks')) {
+                localStorage.setItem('adminBooks', JSON.stringify(defaultBooks));
+            }
+            if (!localStorage.getItem('writerNotifications')) {
+                localStorage.setItem('writerNotifications', JSON.stringify(defaultNotifications));
+            }
+            if (!localStorage.getItem('writerCart')) {
+                localStorage.setItem('writerCart', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('writerLibrary')) {
+                localStorage.setItem('writerLibrary', JSON.stringify([
+                    { title: 'The Alchemist', author: 'Paulo Coelho', cover: 'https://m.media-amazon.com/images/I/71aFt4+OTOL._AC_UF1000,1000_QL80_.jpg', type: 'Purchased' }
+                ]));
+            }
+        }
+
+        function showWriterSection(secId) {
+            document.querySelectorAll('.dash-section').forEach(sec => sec.style.display = 'none');
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => btn.classList.remove('active'));
+
+            const targetSection = document.getElementById(`wsection-${secId}`);
+            if (targetSection) targetSection.style.display = 'block';
+
+            const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
+            const secMap = { 'home': 0, 'cart': 1, 'library': 2, 'analytics': 3, 'post': 4, 'manage': 5, 'inbox': 6, 'profile': 7 };
+            if (secMap[secId] !== undefined && navButtons[secMap[secId]]) {
+                navButtons[secMap[secId]].classList.add('active');
+            }
+
+            if (secId === 'home') renderHomePage();
+            if (secId === 'cart') renderCartPage();
+            if (secId === 'library') renderLibraryPage();
+            if (secId === 'analytics') renderAnalyticsPage();
+            if (secId === 'manage') renderManagePage();
+            if (secId === 'inbox') renderInboxPage();
+        }
+
+        // 1. HOME PAGE RENDER
+        function renderHomePage() {
+            const books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+            
+            // Admin's own books
+            const adminContainer = document.getElementById('adminBooksList');
+            const adminBooks = books.filter(b => b.isAdmin);
+            adminContainer.innerHTML = adminBooks.map(b => `
+                <div class="scroll-card" onclick="openBookDetails('${b.id}')">
+                    <img src="${b.cover}" alt="${b.title}">
+                    <h5 class="mt-8" style="font-size: 13px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin: 6px 0 2px;">${b.title}</h5>
+                    <p style="font-size: 11px; color: #888; margin: 0;">${b.isFree ? 'FREE' : '₹' + b.buyPrice}</p>
+                </div>
+            `).join('');
+
+            // Top 10 Books
+            const top10Container = document.getElementById('top10BooksList');
+            const sortedTop = [...books].sort((a,b) => b.reads - a.reads);
+            top10Container.innerHTML = sortedTop.map((b, i) => `
+                <div class="list-item-card" onclick="openBookDetails('${b.id}')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #f0cfd8); border-radius: 12px; margin-bottom: 8px; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <strong style="font-size: 18px; color: var(--accent-color, #e06d88);">#${i + 1}</strong>
+                        <img src="${b.cover}" style="width: 40px; height: 55px; object-fit: cover; border-radius: 6px;">
+                        <div>
+                            <h5 style="margin:0;">${b.title}</h5>
+                            <p style="margin:0; font-size: 12px; color: #666;">By ${b.author}</p>
+                        </div>
+                    </div>
+                    <span class="badge" style="background: var(--primary-color, #fbdbe2); padding: 4px 8px; border-radius: 8px; font-size: 12px;">${b.reads} Reads</span>
+                </div>
+            `).join('');
+
+            // Recommended Books (Other Writers)
+            const recContainer = document.getElementById('recommendedBooksList');
+            const otherBooks = books.filter(b => !b.isAdmin);
+            recContainer.innerHTML = otherBooks.map(b => `
+                <div class="scroll-card" onclick="openBookDetails('${b.id}')">
+                    <img src="${b.cover}" alt="${b.title}">
+                    <h5 class="mt-8" style="font-size: 13px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin: 6px 0 2px;">${b.title}</h5>
+                    <p style="font-size: 11px; color: #888; margin: 0;">By ${b.author}</p>
+                </div>
+            `).join('');
+        }
+
+        // VIEW BOOK DETAILS MODAL LOGIC
+        function openBookDetails(bookId) {
+            const books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+            const book = books.find(b => b.id === bookId);
+            if (!book) return;
+
+            document.getElementById('viewBookTitle').innerText = book.title;
+            document.getElementById('viewBookAuthor').innerText = `By ${book.author}`;
+            document.getElementById('viewBookCategory').innerText = book.category;
+            document.getElementById('viewBookCover').src = book.cover;
+            document.getElementById('viewBookDescription').innerText = book.description || 'No description provided.';
+            document.getElementById('viewBookBuyPrice').innerText = book.isFree ? 'FREE' : `₹${book.buyPrice}`;
+            document.getElementById('viewBookRentPrice').innerText = book.isFree ? '' : `Rent: ₹${book.rentPrice}`;
+
+            document.getElementById('viewBuyBtn').onclick = () => purchaseBookDirect(book, 'Purchased');
+            document.getElementById('viewRentBtn').onclick = () => purchaseBookDirect(book, 'Rented');
+            document.getElementById('viewCartBtn').onclick = () => addToCart(book);
+
+            document.getElementById('viewBookModal').style.display = 'flex';
+        }
+
+        function closeViewBookModal() {
+            document.getElementById('viewBookModal').style.display = 'none';
+        }
+
+        function purchaseBookDirect(book, type) {
+            const library = JSON.parse(localStorage.getItem('writerLibrary') || '[]');
+            if (!library.some(b => b.title === book.title && b.type === type)) {
+                library.push({ title: book.title, author: book.author, cover: book.cover, type });
+                localStorage.setItem('writerLibrary', JSON.stringify(library));
+                alert(`Successfully ${type.toLowerCase()} "${book.title}"! Added to your Library.`);
+            } else {
+                alert(`"${book.title}" is already in your Library!`);
+            }
+            closeViewBookModal();
+            showWriterSection('library');
+        }
+
+        function addToCart(book) {
+            const cart = JSON.parse(localStorage.getItem('writerCart') || '[]');
+            if (!cart.some(item => item.id === book.id)) {
+                cart.push(book);
+                localStorage.setItem('writerCart', JSON.stringify(cart));
+                alert(`"${book.title}" added to your cart!`);
+            } else {
+                alert(`"${book.title}" is already in your cart.`);
+            }
+            closeViewBookModal();
+        }
+
+        // 2. CART SECTION RENDER
+        function renderCartPage() {
+            const cart = JSON.parse(localStorage.getItem('writerCart') || '[]');
+            const container = document.getElementById('cartItemsList');
+            const summaryCard = document.getElementById('cartSummaryCard');
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p style="color: #777;">Your cart is empty.</p>`;
+                summaryCard.style.display = 'none';
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map((b, index) => {
+                total += (b.isFree ? 0 : b.buyPrice);
+                return `
+                    <div class="list-item-card" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #f0cfd8); border-radius: 12px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="${b.cover}" style="width: 45px; height: 60px; object-fit: cover; border-radius: 6px;">
+                            <div>
+                                <h5 style="margin:0;">${b.title}</h5>
+                                <p style="margin:0; font-size: 12px; color: #666;">By ${b.author}</p>
+                                <strong style="font-size: 13px; color: var(--accent-color);">${b.isFree ? 'FREE' : '₹' + b.buyPrice}</strong>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="background: none; border: none; color: #ff4d4f; cursor: pointer; font-size: 16px;">🗑️</button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('cartTotalPrice').innerText = `₹${total}`;
+            summaryCard.style.display = 'block';
+        }
+
+        function removeFromCart(index) {
+            const cart = JSON.parse(localStorage.getItem('writerCart') || '[]');
+            cart.splice(index, 1);
+            localStorage.setItem('writerCart', JSON.stringify(cart));
+            renderCartPage();
+        }
+
+        function checkoutCart() {
+            const cart = JSON.parse(localStorage.getItem('writerCart') || '[]');
+            const library = JSON.parse(localStorage.getItem('writerLibrary') || '[]');
+
+            cart.forEach(item => {
+                if (!library.some(b => b.title === item.title)) {
+                    library.push({ title: item.title, author: item.author, cover: item.cover, type: 'Purchased' });
+                }
+            });
+
+            localStorage.setItem('writerLibrary', JSON.stringify(library));
+            localStorage.setItem('writerCart', JSON.stringify([]));
+            alert('Purchase successful! All items added to your Library.');
+            showWriterSection('library');
+        }
+
+        // 3. LIBRARY SECTION RENDER
+        function filterLibrary(type, btnElement) {
+            currentLibraryFilter = type;
+            document.querySelectorAll('#wsection-library .pill').forEach(p => p.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+            renderLibraryPage();
+        }
+
+        function renderLibraryPage() {
+            const library = JSON.parse(localStorage.getItem('writerLibrary') || '[]');
+            const container = document.getElementById('libraryBookList');
+
+            const filtered = library.filter(b => b.type === currentLibraryFilter || (currentLibraryFilter === 'Downloaded' && b.type === 'Purchased'));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="color: #777;">No ${currentLibraryFilter.toLowerCase()} books found.</p>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(b => `
+                <div class="list-item-card" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #f0cfd8); border-radius: 12px; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="${b.cover}" style="width: 45px; height: 60px; object-fit: cover; border-radius: 6px;">
+                        <div class="item-details">
+                            <h5 style="margin: 0;">${b.title}</h5>
+                            <p style="margin: 2px 0; font-size: 12px; color: #666;">${b.author}</p>
+                            <span class="badge ${b.type === 'Purchased' ? 'badge-success' : 'badge-info'}">${b.type}</span>
+                        </div>
+                    </div>
+                    <button class="btn primary-btn btn-sm" onclick="window.location.href='reader.html?book=${encodeURIComponent(b.title)}&from=writer'" style="padding: 8px 12px; border-radius: 10px; background: var(--accent-color); color: #fff; border: none; cursor: pointer; font-size: 12px;">Read PDF 📖</button>
+                </div>
+            `).join('');
+        }
+
+        // ANALYTICS PAGE
+        function renderAnalyticsPage() {
+            const books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+            const adminBooks = books.filter(b => b.isAdmin);
+
+            let totalReads = 0;
+            let totalSales = 0;
+
+            adminBooks.forEach(b => {
+                totalReads += b.reads;
+                totalSales += b.sales;
+            });
+
+            document.getElementById('statTotalReads').innerText = totalReads.toLocaleString();
+            document.getElementById('statTotalSales').innerText = '₹' + totalSales.toLocaleString();
+
+            const container = document.getElementById('analyticsBooksList');
+            container.innerHTML = adminBooks.map(b => `
+                <div class="list-item-card" style="display: flex; gap: 12px; padding: 12px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #f0cfd8); border-radius: 12px; margin-bottom: 10px;">
+                    <img src="${b.cover}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px;">
+                    <div style="flex: 1;">
+                        <h5 style="margin:0;">${b.title}</h5>
+                        <p style="margin:2px 0; font-size: 12px; color: #666;">By ${b.author}</p>
+                        <div style="display: flex; gap: 12px; margin-top: 6px; font-size: 12px;">
+                            <span>📖 <strong>${b.reads}</strong> Reads</span>
+                            <span>💰 <strong>₹${b.sales}</strong> Revenue</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            drawSalesChart(adminBooks);
+        }
+
+        function drawSalesChart(adminBooks) {
+            const canvas = document.getElementById('salesChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const maxSales = Math.max(...adminBooks.map(b => b.sales), 1000);
+            const barWidth = 60;
+            const gap = 40;
+            const startX = 50;
+
+            adminBooks.forEach((book, idx) => {
+                const barHeight = (book.sales / maxSales) * 130;
+                const x = startX + idx * (barWidth + gap);
+                const y = 180 - barHeight;
+
+                ctx.fillStyle = idx % 2 === 0 ? '#e06d88' : '#fbdbe2';
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                ctx.fillStyle = '#4a3e3d';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText(`₹${book.sales}`, x + 5, y - 6);
+
+                ctx.font = '10px sans-serif';
+                ctx.fillText(book.title.substring(0, 8) + '..', x, 198);
+            });
+        }
+
+        // POST NEW BOOK
+        function handlePostBook(e) {
+            e.preventDefault();
+            const title = document.getElementById('postTitle').value;
+            const author = document.getElementById('postAuthor').value;
+            const category = document.getElementById('postCategory').value;
+            const buyPrice = parseFloat(document.getElementById('postBuyPrice').value) || 0;
+            const rentPrice = parseFloat(document.getElementById('postRentPrice').value) || 0;
+            const description = document.getElementById('postDescription').value;
+            
+            const cover = uploadedCoverData || document.getElementById('postCoverUrl').value || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400';
+            const pdfFile = uploadedPdfData || document.getElementById('postPdfUrl').value || '';
+
+            const newBook = {
+                id: 'book-' + Date.now(),
+                title, author, category,
+                buyPrice, rentPrice, description,
+                reads: 0, sales: 0,
+                isFree: buyPrice === 0,
+                cover, pdfFile, isAdmin: true
+            };
+
+            const books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+            books.push(newBook);
+            localStorage.setItem('adminBooks', JSON.stringify(books));
+
+            alert(`"${title}" published successfully! 🚀`);
+            document.getElementById('uploadBookForm').reset();
+            uploadedCoverData = '';
+            uploadedPdfData = '';
+            showWriterSection('manage');
+        }
+
+        // MANAGE BOOKS
+        function renderManagePage() {
+            const books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+            const adminBooks = books.filter(b => b.isAdmin);
+
+            const container = document.getElementById('manageBooksList');
+            container.innerHTML = adminBooks.map(b => `
+                <div class="list-item-card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #f0cfd8); border-radius: 12px; margin-bottom: 10px;">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <img src="${b.cover}" style="width: 45px; height: 60px; object-fit: cover; border-radius: 6px;">
+                        <div>
+                            <h5 style="margin: 0;">${b.title}</h5>
+                            <p style="margin: 2px 0; font-size: 12px; color: #666;">Buy: ${b.isFree ? 'FREE' : '₹' + b.buyPrice} | Rent: ₹${b.rentPrice}</p>
+                            <span style="font-size: 11px; background: var(--primary-color); padding: 2px 6px; border-radius: 4px;">${b.category}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn outlined-btn btn-sm" onclick="openEditModal('${b.id}')" style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: none; cursor: pointer;">Edit</button>
+                        <button class="btn outlined-btn btn-sm danger" onclick="deleteBook('${b.id}')" style="padding: 6px 12px; border-radius: 8px; border: 1px solid #ff4d4f; color: #ff4d4f; background: none; cursor: pointer;">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openEditModal(id) {
+            const books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+            const book = books.find(b => b.id === id);
+            if (!book) return;
+
+            document.getElementById('editBookId').value = book.id;
+            document.getElementById('editBookTitle').value = book.title;
+            document.getElementById('editBookAuthor').value = book.author;
+            document.getElementById('editBookCategory').value = book.category;
+            document.getElementById('editBookBuyPrice').value = book.buyPrice;
+            document.getElementById('editBookRentPrice').value = book.rentPrice;
+            document.getElementById('editBookDescription').value = book.description || '';
+            document.getElementById('editBookIsFree').checked = book.isFree;
+
+            document.getElementById('editBookModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editBookModal').style.display = 'none';
+        }
+
+        function toggleFreeCheckbox() {
+            const checkbox = document.getElementById('editBookIsFree');
+            checkbox.checked = !checkbox.checked;
+            toggleFreeOption(checkbox.checked);
+        }
+
+        function toggleFreeOption(isFree) {
+            if (isFree) {
+                document.getElementById('editBookBuyPrice').value = 0;
+                document.getElementById('editBookRentPrice').value = 0;
+            }
+        }
+
+        function saveBookEdits(e) {
+            e.preventDefault();
+            const id = document.getElementById('editBookId').value;
+            const books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+            const index = books.findIndex(b => b.id === id);
+
+            if (index !== -1) {
+                books[index].title = document.getElementById('editBookTitle').value;
+                books[index].author = document.getElementById('editBookAuthor').value;
+                books[index].category = document.getElementById('editBookCategory').value;
+                books[index].description = document.getElementById('editBookDescription').value;
+                books[index].isFree = document.getElementById('editBookIsFree').checked;
+                books[index].buyPrice = books[index].isFree ? 0 : parseFloat(document.getElementById('editBookBuyPrice').value) || 0;
+                books[index].rentPrice = books[index].isFree ? 0 : parseFloat(document.getElementById('editBookRentPrice').value) || 0;
+
+                localStorage.setItem('adminBooks', JSON.stringify(books));
+                closeEditModal();
+                renderManagePage();
+                alert('Book details updated successfully!');
+            }
+        }
+
+        function deleteBook(id) {
+            if (confirm('Are you sure you want to delete this book entirely?')) {
+                let books = JSON.parse(localStorage.getItem('adminBooks') || '[]');
+                books = books.filter(b => b.id !== id);
+                localStorage.setItem('adminBooks', JSON.stringify(books));
+                renderManagePage();
+            }
+        }
+
+        // INBOX PAGE RENDER
+        function renderInboxPage() {
+            const notifications = JSON.parse(localStorage.getItem('writerNotifications') || '[]');
+            const container = document.getElementById('writerNotiFeed');
+            container.innerHTML = notifications.map(n => `
+                <div class="noti-card" style="display: flex; gap: 12px; padding: 12px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #f0cfd8); border-radius: 12px; margin-bottom: 10px;">
+                    <span style="font-size: 24px;">${n.icon}</span>
+                    <div>
+                        <strong style="font-size: 14px;">${n.title}</strong>
+                        <p style="margin: 2px 0; font-size: 13px; color: #555;">${n.msg}</p>
+                        <span style="font-size: 11px; color: #999;">${n.date}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // PROFILE & THEMES
+        function saveProfileSettings(e) {
+            e.preventDefault();
+            const username = document.getElementById('editUsernameInput').value;
+            document.getElementById('adminDisplayName').innerText = username;
+            document.getElementById('profileUsernameDisplay').innerText = username;
+            alert('Profile saved successfully!');
+        }
+
+        function setTheme(themeName, element) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('adminTheme', themeName);
+
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdminStorage();
+            renderHomePage();
+            const savedTheme = localStorage.getItem('adminTheme') || 'cozy-pink';
+            setTheme(savedTheme);
+        });
+
+        function handleWriterLogout() {
+    if (confirm("Are you sure you want to log out of Writer Studio?")) {
+        // Clear stored sessions
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirect back to main page or login screen
+        window.location.href = 'index.html'; 
+    }
+}
+
+async function submitNewBook(event) {
+    if(event) event.preventDefault();
+
+    const bookData = {
+        title: document.getElementById('book-title').value,       // Ensure IDs match your HTML
+        author: document.getElementById('book-author').value,
+        genre: document.getElementById('book-genre').value,
+        description: document.getElementById('book-desc').value,
+        cover_image_url: document.getElementById('book-cover').value,
+        price: parseFloat(document.getElementById('book-price').value) || 0.0,
+        writer_id: 1 // Links to Paulo Coelho or row #1 in writers
+    };
+
+    try {
+        const response = await fetch('/api/add-book', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookData)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Book uploaded successfully into MySQL database!');
+            location.reload();
+        } else {
+            alert('Failed to upload book: ' + result.message);
+        }
+    } catch (err) {
+        console.error('Error connecting to Flask:', err);
+        alert('Server error! Check if app.py is running.');
+    }
+}     
+
+         
+    </script>
+</body>
+</html>

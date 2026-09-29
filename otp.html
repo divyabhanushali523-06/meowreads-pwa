@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow Reads - Verify OTP</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <main class="welcome-container">
+        <div class="welcome-cat">💌</div>
+        <h1 class="welcome-title">Two-Factor Authentication</h1>
+        <p class="welcome-subtitle" id="otpSubtitle">Enter the code sent to your phone</p>
+
+        <form id="otpForm" class="auth-form">
+            <div class="otp-inputs">
+                <input type="text" maxlength="1" class="otp-digit" required autofocus>
+                <input type="text" maxlength="1" class="otp-digit" required>
+                <input type="text" maxlength="1" class="otp-digit" required>
+                <input type="text" maxlength="1" class="otp-digit" required>
+            </div>
+
+            <button type="submit" class="btn primary-btn mt-16">Verify & Continue</button>
+        </form>
+
+        <p class="auth-switch">Didn't receive code? <a href="#" id="btnResend">Resend OTP</a></p>
+    </main>
+
+    <script src="js/otp.js"></script>
+</body>
+</html>

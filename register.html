@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow Reads - Register</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <main class="welcome-container">
+        <div class="welcome-cat">🐱✨</div>
+        <h1 class="welcome-title">Create Account</h1>
+        <p class="welcome-subtitle">Join the Meow Reads family ♡</p>
+
+        <form id="registerForm" class="auth-form">
+            <div class="form-group">
+                <input type="text" id="regName" placeholder="Full Name" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="regUsername" placeholder="Username" required>
+            </div>
+
+            <div class="form-group">
+                <input type="date" id="regBirthdate" required>
+            </div>
+
+            <div class="form-group">
+                <input type="tel" id="regPhone" placeholder="Phone Number (for OTP)" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="regPassword" placeholder="Password" required>
+            </div>
+
+            <!-- Role Preference -->
+            <div class="role-selector">
+                <label class="role-label">I want to join as:</label>
+                <div class="role-options">
+                    <label class="role-chip">
+                        <input type="radio" name="role" value="user" checked>
+                        <span>Reader 📚</span>
+                    </label>
+                    <label class="role-chip">
+                        <input type="radio" name="role" value="writer">
+                        <span>Writer ✍️</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn primary-btn mt-16">Send OTP</button>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="login.html">Login here</a></p>
+    </main>
+    <script>
+        // Step 1: Send OTP request
+async function handleSendOTP() {
+    const phoneInput = document.getElementById('phone-input').value; // Replace with your phone input ID
+
+    const response = await fetch('http://127.0.0.1:5000/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone_number: phoneInput })
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+        alert(`OTP sent! Debug Code: ${result.debug_otp}`);
+    } else {
+        alert(result.error || 'Failed to send OTP');
+    }
+}
+
+// Step 2: Verify entered OTP
+async function handleVerifyOTP() {
+    const phoneInput = document.getElementById('phone-input').value; // Replace with your phone input ID
+    const otpInput = document.getElementById('otp-input').value;     // Replace with your OTP input ID
+
+    const response = await fetch('http://127.0.0.1:5000/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone_number: phoneInput, otp: otpInput })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        alert('OTP Verified! Logging in...');
+        // Proceed to redirect or show dashboard
+    } else {
+        alert('Invalid OTP code. Try again.');
+    }
+}
+
+// Attach this to your registration form
+document.getElementById('register-form').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Stop standard form submit refresh
+
+    const formData = {
+        full_name: document.getElementById('reg-fullname').value,
+        username: document.getElementById('reg-username').value,
+        email: document.getElementById('reg-email').value,
+        phone_number: document.getElementById('reg-phone').value,
+        password: document.getElementById('reg-password').value
+    };
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/api/register-writer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Registered successfully in MySQL!');
+            window.location.href = 'writer_dashboard.html';
+        } else {
+            alert('Registration error: ' + result.message);
+        }
+    } catch (err) {
+        console.error('Failed to connect to backend:', err);
+        alert('Server connection error. Make sure app.py is running!');
+    }
+});
+    </script>
+    <script src="js/register.js"></script>
+</body>
+</html>

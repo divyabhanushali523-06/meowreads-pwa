@@ -1,0 +1,16 @@
+{
+  "short_name": "MeowReads",
+  "name": "MeowReads Writer Dashboard",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/616/616408.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/writer_dashboard.html",
+  "background_color": "#ffffff",
+  "theme_color": "#e06d88",
+  "display": "standalone",
+  "orientation": "portrait"
+}

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cozy-pink">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeowReads - Book Details</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Modern Header Layout Fixes */
+        .navbar {
+            background: var(--card-bg, #ffffff);
+            border-bottom: 1px solid var(--border-color, #f0cfd8);
+            padding: 12px 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .logo {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary, #4a3e3d);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-primary, #4a3e3d);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover {
+            color: var(--accent-color, #e06d88);
+        }
+
+        /* Layout Grid */
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 24px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .details-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Card Styles */
+        .cover-card, .profile-card {
+            background: var(--card-bg, #ffffff);
+            border: 1px solid var(--border-color, #f0cfd8);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        .cover-card { text-align: center; }
+        .cover-img {
+            width: 100%;
+            max-width: 220px;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .action-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        /* Button Fixes */
+        .btn {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: transform 0.1s ease, opacity 0.2s ease;
+        }
+        .btn:active { transform: scale(0.98); }
+        .primary-btn {
+            background: var(--primary-color, #fbdbe2);
+            color: var(--text-primary, #4a3e3d);
+            border-color: #f7b2c4;
+        }
+        .outlined-btn {
+            background: #ffffff;
+            border-color: var(--border-color, #f0cfd8);
+            color: var(--text-primary, #4a3e3d);
+        }
+
+        /* Form & Review Box Fixes */
+        .review-card {
+            background: var(--bg-primary, #fff5f7);
+            border: 1px solid var(--border-color, #f0cfd8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .form-control-full {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid var(--border-color, #f0cfd8);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            background: #ffffff;
+        }
+        .form-control-full:focus {
+            border-color: var(--accent-color, #e06d88);
+            box-shadow: 0 0 0 3px rgba(224, 109, 136, 0.15);
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--primary-color, #fbdbe2);
+            color: var(--text-primary, #4a3e3d);
+        }
+        .like-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--accent-color, #e06d88);
+            font-weight: bold;
+            font-size: 13px;
+            padding: 0;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Simple Top Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="user_dashboard.html" class="logo">🐾 MeowReads</a>
+            <a href="user_dashboard.html" class="nav-link">← Back to Dashboard</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="details-grid">
+            <!-- Left Side: Cover & Actions -->
+            <div class="cover-card">
+                <img id="bookCover" src="" alt="Book Cover" class="cover-img">
+                <div class="action-box">
+                    <button id="addToCartBtn" class="btn primary-btn" onclick="addToCart()">🛒 Add to Cart</button>
+                    <button id="buyBtn" class="btn outlined-btn" onclick="buyBook()">💳 Buy Now</button>
+                    <button id="rentBtn" class="btn outlined-btn" onclick="rentBook()">⏳ Rent for 30 Days</button>
+                    <button id="readPdfBtn" class="btn primary-btn" style="display: none; background: #2e7d32; color: #ffffff; border-color: #2e7d32;" onclick="openPdfReader()">📖 Read PDF</button>
+                </div>
+            </div>
+
+            <!-- Right Side: Metadata & Description -->
+            <div class="profile-card">
+                <span id="bookCategory" class="badge">Category</span>
+                <h2 id="bookTitle" style="margin: 12px 0 6px 0;">Book Title</h2>
+                <p id="bookMeta" style="color: #666; margin: 0 0 16px 0;">By Author • Rating: ⭐ 4.8</p>
+                <hr style="border: 0; border-top: 1px solid var(--border-color, #f0cfd8); margin: 16px 0;">
+
+                <h4 style="margin-bottom: 8px;">Synopsis</h4>
+                <p id="bookSynopsis" style="line-height: 1.6; color: #444;">Loading description...</p>
+                
+                <h4 style="margin-top: 24px; margin-bottom: 8px;">Included with Access</h4>
+                <ul style="line-height: 1.8; padding-left: 20px; color: #555;">
+                    <li>High-quality PDF & ePub viewer</li>
+                    <li>Unlimited bookmarks & highlight synchronization</li>
+                    <li>Audio ambience integration during reading</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Reader Reviews & Comments Section -->
+        <div class="profile-card" style="margin-top: 24px;">
+            <h3 style="margin-bottom: 16px;">Reader Reviews & Discussion 💬</h3>
+            
+            <!-- Submit Review Form -->
+            <div class="review-card">
+                <h5 style="margin: 0 0 10px 0;">Leave a Review & Comment</h5>
+                <div style="margin-bottom: 12px;">
+                    <textarea id="newReviewText" class="form-control-full" rows="3" placeholder="Share your thoughts about this book..."></textarea>
+                </div>
+                <button class="btn primary-btn" style="width: auto; padding: 8px 20px;" onclick="postReview()">Post Review</button>
+            </div>
+
+            <!-- Review Feed -->
+            <div id="reviewsList" style="margin-top: 20px;">
+                <div class="review-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong>Luna Lovebook ⭐⭐⭐⭐⭐</strong>
+                        <span style="font-size: 12px; color: #888;">2 days ago</span>
+                    </div>
+                    <p style="margin: 10px 0 6px 0; color: #444;">An absolute masterpiece! The cozy atmosphere pairs so well with rainy days. Highly recommended.</p>
+                    <button class="like-btn" onclick="likeComment(this, 'Luna Lovebook')">❤️ <span class="like-count">12</span> Likes</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    const booksData = {
+        'alchemist': {
+            id: 'alchemist',
+            title: 'The Alchemist',
+            author: 'Paulo Coelho',
+            category: 'Fiction / Philosophical',
+            buyPrice: 299,
+            rentPrice: 49,
+            rating: '4.9 (1,240 reviews)',
+            cover: 'https://m.media-amazon.com/images/I/71aFt4+OTOL._AC_UF1000,1000_QL80_.jpg',
+            synopsis: 'Paulo Coelho\'s masterpiece tells the mystical story of Santiago, an Andalusian shepherd boy who yearns to travel in search of a worldly treasure. His quest will lead him to riches far different—and far more satisfying—than he ever imagined.'
+        },
+        'atomic-habits': {
+            id: 'atomic-habits',
+            title: 'Atomic Habits',
+            author: 'James Clear',
+            category: 'Self-Help / Productivity',
+            buyPrice: 399,
+            rentPrice: 59,
+            rating: '4.8 (2,150 reviews)',
+            cover: 'https://m.media-amazon.com/images/I/81YkqyaFVEL._AC_UF1000,1000_QL80_.jpg',
+            synopsis: 'No matter your goals, Atomic Habits offers a proven framework for improving—every day. James Clear, one of the world\'s leading experts on habit formation, reveals practical strategies that will teach you exactly how to form good habits, break bad ones, and master the tiny behaviors that lead to remarkable results.'
+        },
+        'whispering-library': {
+            id: 'whispering-library',
+            title: 'The Whispering Library',
+            author: 'Eleanor Vance',
+            category: 'Fiction / Cozy Mystery',
+            buyPrice: 349,
+            rentPrice: 49,
+            rating: '4.8 (124 reviews)',
+            cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400',
+            synopsis: 'On the third shelf of the quiet archive room lies an ancient leather-bound volume wrapped in faint silver foil. When university scholar Oliver stumbles upon it during a rainy midnight study session, he unlocks a forgotten world of enchanted secrets and hidden archives.'
+        }
+    };
+
+    let currentBook = null;
+
+    function resolveBookKey(param) {
+        if (!param) return null;
+        const normalized = param.toLowerCase().trim().replace(/_/g, '-').replace(/\s+/g, '-');
+        if (booksData[normalized]) return normalized;
+        
+        for (const key in booksData) {
+            const book = booksData[key];
+            const titleSlug = book.title.toLowerCase().replace(/\s+/g, '-');
+            if (key === normalized || titleSlug === normalized || book.id === normalized) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    function loadBookDetails() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawParam = urlParams.get('id') || urlParams.get('book');
+        const storedBook = localStorage.getItem('selectedBook');
+
+        let key = resolveBookKey(rawParam) || resolveBookKey(storedBook) || 'alchemist';
+        currentBook = booksData[key] || booksData['alchemist'];
+
+        document.getElementById('bookCover').src = currentBook.cover;
+        document.getElementById('bookTitle').innerText = currentBook.title;
+        document.getElementById('bookCategory').innerText = currentBook.category;
+        document.getElementById('bookMeta').innerHTML = `By <strong>${currentBook.author}</strong> • Rating: ⭐ ${currentBook.rating}`;
+        document.getElementById('bookSynopsis').innerText = currentBook.synopsis;
+
+        document.getElementById('addToCartBtn').innerText = `🛒 Add to Cart (₹${currentBook.buyPrice})`;
+        document.getElementById('buyBtn').innerText = `💳 Buy Now (₹${currentBook.buyPrice})`;
+        document.getElementById('rentBtn').innerText = `⏳ Rent for 30 Days (₹${currentBook.rentPrice})`;
+
+        checkOwnership();
+    }
+
+    function checkOwnership() {
+        let library = JSON.parse(localStorage.getItem('myLibrary') || '[]');
+        const isOwned = library.some(item => item.title.toLowerCase() === currentBook.title.toLowerCase());
+
+        if (isOwned) {
+            document.getElementById('addToCartBtn').style.display = 'none';
+            document.getElementById('buyBtn').style.display = 'none';
+            document.getElementById('rentBtn').style.display = 'none';
+            document.getElementById('readPdfBtn').style.display = 'block';
+        }
+    }
+
+    function addToCart() {
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        cart.push({ 
+            id: Date.now(),
+            title: currentBook.title, 
+            price: currentBook.buyPrice, 
+            type: 'Buy',
+            cover: currentBook.cover 
+        });
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`"${currentBook.title}" added to your cart! 🛒`);
+    }
+
+    function buyBook() {
+        confirmPurchase(currentBook.title, currentBook.buyPrice, 'Purchased');
+    }
+
+    function rentBook() {
+        confirmPurchase(currentBook.title, currentBook.rentPrice, 'Rented (30 Days)');
+    }
+
+    function confirmPurchase(title, price, type) {
+        let library = JSON.parse(localStorage.getItem('myLibrary') || '[]');
+        library.push({ title, type, date: new Date().toLocaleDateString() });
+        localStorage.setItem('myLibrary', JSON.stringify(library));
+
+        let notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+        notifications.unshift({
+            id: Date.now(),
+            title: `Receipt: ${title}`,
+            message: `Thank you for your order! You ${type.toLowerCase()} "${title}" for ₹${price}.`,
+            date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+
+        checkOwnership();
+        alert(`Purchase successful! You can now click "Read PDF".`);
+    }
+
+    function openPdfReader() {
+        window.location.href = `reader.html?book=${encodeURIComponent(currentBook.title)}`;
+    }
+
+    function postReview() {
+        const text = document.getElementById('newReviewText').value;
+        if (!text.trim()) return;
+
+        const reviewsList = document.getElementById('reviewsList');
+        const newReviewHtml = `
+            <div class="review-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>You ⭐⭐⭐⭐⭐</strong>
+                    <span style="font-size: 12px; color: #888;">Just now</span>
+                </div>
+                <p style="margin: 10px 0 6px 0; color: #444;">${text}</p>
+                <button class="like-btn" onclick="likeComment(this, 'You')">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+        `;
+        reviewsList.insertAdjacentHTML('afterbegin', newReviewHtml);
+        document.getElementById('newReviewText').value = '';
+    }
+
+    function likeComment(btn, author) {
+        const countSpan = btn.querySelector('.like-count');
+        let currentLikes = parseInt(countSpan.innerText);
+        countSpan.innerText = currentLikes + 1;
+    }
+
+    document.addEventListener('DOMContentLoaded', loadBookDetails);
+    </script>
+</body>
+</html>

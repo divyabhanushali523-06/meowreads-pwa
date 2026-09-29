@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow Reads - User Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Top Header Bar -->
+    <header class="app-header">
+        <div class="header-brand">
+            <span class="cat-logo">🐱</span>
+            <h2>Meow Reads</h2>
+        </div>
+        <div class="header-actions">
+            <button id="btnHeaderCart" class="icon-btn" onclick="showSection('cart')">🛒 <span id="dashCartBadge"></span></button>
+            <button id="btnHeaderInbox" class="icon-btn" onclick="showSection('inbox')">🔔</button>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="dashboard-content">
+
+        <!-- 1. HOME SECTION -->
+        <section id="section-home" class="dash-section active">
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <h3>Cozy up with a good book 📖</h3>
+                    <p>Discover romantic, mysterious, and magical worlds today.</p>
+                </div>
+            </div>
+
+            <div class="section-title-row">
+                <h4>Recommended For You</h4>
+                <a href="#" onclick="showSection('categories')">See all</a>
+            </div>
+            <div id="userRecommendedBooks" class="book-grid">
+                <div class="book-card" onclick="localStorage.setItem('selectedBook', 'alchemist'); window.location.href='book_details.html?id=alchemist';" style="cursor: pointer;">
+                    <img src="https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg" alt="Book Cover" class="book-cover">
+                    <div class="book-info">
+                        <h5>The Alchemist</h5>
+                        <p>Paulo Coelho</p>
+                        <div class="book-price-tag">₹299 | Rent ₹49</div>
+                    </div>
+                </div>
+                <div class="book-card" onclick="localStorage.setItem('selectedBook', 'atomic-habits'); window.location.href='book_details.html?id=atomic-habits';" style="cursor: pointer;">
+                    <img src="https://m.media-amazon.com/images/I/81YkqyaFVEL.jpg" alt="Book Cover" class="book-cover">
+                    <div class="book-info">
+                        <h5>Atomic Habits</h5>
+                        <p>James Clear</p>
+                        <div class="book-price-tag">₹399 | Rent ₹59</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title-row mt-20">
+                <h4>Top 10 Books 🏆</h4>
+            </div>
+            <div id="userTopBooks" class="book-grid horizontal-scroll">
+                <div class="book-card mini-card">
+                    <img src="https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg" alt="Book Cover">
+                    <h6>1. The Alchemist</h6>
+                </div>
+                <div class="book-card mini-card">
+                    <img src="https://m.media-amazon.com/images/I/81YkqyaFVEL.jpg" alt="Book Cover">
+                    <h6>2. Atomic Habits</h6>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. MY LIBRARY SECTION -->
+        <section id="section-library" class="dash-section">
+            <h3 class="page-header">My Library 📚</h3>
+            <div class="tab-pills">
+                <button class="pill active">Purchased</button>
+                <button class="pill">Rented</button>
+                <button class="pill">Downloaded</button>
+            </div>
+            <div id="libraryBookList" class="vertical-list">
+                <div class="list-item-card">
+                    <img src="https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg" class="thumb-img">
+                    <div class="item-details">
+                        <h5>The Alchemist</h5>
+                        <p>Paulo Coelho</p>
+                        <span class="badge badge-success">Purchased</span>
+                    </div>
+                    <button class="btn primary-btn btn-sm" onclick="window.location.href='reader.html?book=The%20Alchemist'">Read PDF 📖</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CATEGORIES SECTION -->
+        <section id="section-categories" class="dash-section">
+            <h3 class="page-header">Categories 🏷️</h3>
+            <div class="category-grid">
+                <button class="cat-chip">Romance 💖</button>
+                <button class="cat-chip">Fantasy 🧙‍♂️</button>
+                <button class="cat-chip">Horror 👻</button>
+                <button class="cat-chip">Thriller 🔪</button>
+                <button class="cat-chip">Comedy 😂</button>
+                <button class="cat-chip">Drama 🎭</button>
+            </div>
+        </section>
+
+        <!-- 4. AMBIENCE LOUNGE SECTION -->
+        <section id="section-ambience" class="dash-section">
+            <h3 class="page-header">Purr-fect Ambience Lounge 🎧</h3>
+            <p class="subtitle">Select interactive cat background scene & relaxing acoustics</p>
+
+            <div id="ambienceStage" class="ambience-stage scene-cafe">
+                <div class="stage-cat-mascot">🐱☕</div>
+                <h4 id="stageTitle">Sitting at Cozy Cafe</h4>
+            </div>
+
+            <div class="ambience-card mt-16">
+                <h4>Choose Scene</h4>
+                <select id="bgSceneSelect" class="form-control" onchange="changeBgScene(this.value)">
+                    <option value="cafe">Cozy Cafe ☕</option>
+                    <option value="rain">Beside Window Rain 🌧️</option>
+                    <option value="library">Grand Library 🏛️</option>
+                    <option value="car">Night Car Ride 🚗</option>
+                    <option value="terrace">Starry Terrace 🌌</option>
+                </select>
+
+                <h4 class="mt-20">Layered Ambient Acoustics</h4>
+                
+                <div class="audio-track-row">
+                    <span>🌧️ Soft Rain</span>
+                    <button id="btn-rain" class="btn audio-btn" onclick="toggleAudio('rain')">Play ▶</button>
+                    <audio id="audio-rain" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2518/2518-preview.mp3"></audio>
+                </div>
+
+                <div class="audio-track-row">
+                    <span>☕ Cafe Chatter</span>
+                    <button id="btn-cafe" class="btn audio-btn" onclick="toggleAudio('cafe')">Play ▶</button>
+                    <audio id="audio-cafe" loop preload="auto" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=coffee-shop-ambiance-113337.mp3"></audio>
+                </div>
+
+                <div class="audio-track-row">
+                    <span>🐦 Birds Chirping</span>
+                    <button id="btn-birds" class="btn audio-btn" onclick="toggleAudio('birds')">Play ▶</button>
+                    <audio id="audio-birds" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2432/2432-preview.mp3"></audio>
+                </div>
+
+                <div class="audio-track-row">
+                    <span>🔥 Fireplace Crackle</span>
+                    <button id="btn-fire" class="btn audio-btn" onclick="toggleFireSound()">Play ▶</button>
+                </div>
+
+                <div class="audio-track-row">
+                    <span>🐱 Soft Purring Cat</span>
+                    <button id="btn-purr" class="btn audio-btn" onclick="toggleAudio('purr')">Play ▶</button>
+                    <audio id="audio-purr" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/87/87-preview.mp3"></audio>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. INBOX SECTION -->
+        <section id="section-inbox" class="dash-section">
+            <h3 class="page-header">Inbox & Notifications 🔔</h3>
+            <div class="notification-list">
+                <div class="noti-card">
+                    <span class="noti-icon">🎉</span>
+                    <div class="noti-content">
+                        <strong>New Release Alert!</strong>
+                        <p>A new mystery novel has been published in Thriller.</p>
+                        <small>2 hours ago</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CART SECTION -->
+        <section id="section-cart" class="dash-section">
+            <h3 class="page-header">My Cart 🛒</h3>
+            <div id="cartItemsList" class="vertical-list">
+                <p>Your cart is empty.</p>
+            </div>
+        </section>
+
+        <!-- 7. PROFILE & ABOUT SECTION -->
+        <section id="section-profile" class="dash-section">
+            <h3 class="page-header">My Profile & Settings 👤</h3>
+            
+            <div class="profile-card">
+                <div class="avatar-picker">
+                    <img id="currentPfp" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="pfp-large">
+                    <p style="text-align:center; font-size:12px;">Select Cat Avatar:</p>
+                    <div class="avatar-options">
+                        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" onclick="changePfp(this.src)">
+                        <img src="https://cdn-icons-png.flaticon.com/512/616/616430.png" onclick="changePfp(this.src)">
+                        <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" onclick="changePfp(this.src)">
+                    </div>
+                </div>
+                <div class="form-group mt-16">
+                    <label>Username</label>
+                    <input type="text" id="profUsername" class="form-control" value="CatLover2026">
+                </div>
+                <button class="btn primary-btn mt-16" onclick="saveProfile()">Save Changes</button>
+            </div>
+
+            <!-- Account Settings -->
+            <div class="settings-card">
+                <h4>Account Settings ⚙️</h4>
+                <div class="form-group mt-16">
+                    <label>Push Notifications</label>
+                    <input type="text" class="form-control" value="Enabled" readonly>
+                </div>
+                <div class="form-group mt-16">
+                    <label>App Theme</label>
+                    <select id="themeSelect" class="form-control" onchange="applyTheme(this.value)">
+                        <optgroup label="☀️ Light Modes">
+                            <option value="cozy-pink">Cozy Pink (Default)</option>
+                            <option value="butter-yellow">Butter Yellow 🧈</option>
+                            <option value="sage-green">Sage Green 🌿</option>
+                            <option value="baby-blue">Baby Blue 🍼</option>
+                        </optgroup>
+                        <optgroup label="🌙 Dark Modes">
+                            <option value="dark-forest">Dark Forest Green 🌲</option>
+                            <option value="cherry-red">Cherry Red 🍒</option>
+                            <option value="midnight-blue">Midnight Blue 🌌</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="about-card">
+                <h4>About Meow Reads 🐾</h4>
+                <p style="font-size:13px; color:var(--text-charcoal); margin-top:8px; line-height:1.5;">
+                    Meow Reads is a cozy Progressive Web App (PWA) reading ecosystem designed for book lovers and writers.
+                </p>
+                <p style="font-size:11px; color:gray; margin-top:10px;">Version 1.0.0 (2026)</p>
+            </div>
+
+            <button class="btn outlined-btn mt-16" onclick="logout()">Logout</button>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="showSection('home')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-item" onclick="showSection('library')">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">Library</span>
+        </button>
+        <button class="nav-item" onclick="showSection('ambience')">
+            <span class="nav-icon">🎧</span>
+            <span class="nav-label">Ambience</span>
+        </button>
+        <button class="nav-item" onclick="showSection('profile')">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Profile</span>
+        </button>
+    </nav>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

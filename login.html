@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow Reads - Login</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <main class="welcome-container">
+        <div class="welcome-cat">🐾 🐱</div>
+        <h1 class="welcome-title">Welcome Back!</h1>
+        <p class="welcome-subtitle">Login to continue your reading journey</p>
+
+        <form id="loginForm" class="auth-form">
+            <div class="form-group">
+                <input type="text" id="loginUsername" placeholder="Username" required>
+            </div>
+
+            <div class="form-group">
+                <input type="tel" id="loginPhone" placeholder="Phone Number" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="loginPassword" placeholder="Password" required>
+            </div>
+
+            <!-- Role Preference -->
+            <div class="role-selector">
+                <label class="role-label">Login as:</label>
+                <div class="role-options">
+                    <label class="role-chip">
+                        <input type="radio" name="loginRole" value="user" checked>
+                        <span>Reader 📚</span>
+                    </label>
+                    <label class="role-chip">
+                        <input type="radio" name="loginRole" value="writer">
+                        <span>Writer ✍️</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn primary-btn mt-16">Get Login OTP</button>
+        </form>
+
+        <p class="auth-switch">Don't have an account? <a href="register.html">Sign up</a></p>
+    </main>
+
+    <script src="js/login.js"></script>
+</body>
+</html>
