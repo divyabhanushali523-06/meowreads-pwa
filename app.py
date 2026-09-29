@@ -23,7 +23,7 @@ otp_store = {}
 # Serve HTML files directly from root folder
 @app.route('/')
 def index():
-    return send_from_directory('.', 'writer_dashboard.html')
+    return send_from_directory('.', 'index.html')
 
 @app.route('/<path:path>')
 def serve_static(path):
