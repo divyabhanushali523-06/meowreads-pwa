@@ -26,6 +26,8 @@ def init_db():
     try:
         db = get_db_connection()
         cursor = db.cursor()
+        
+        # Create writers table
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS writers (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,14 +41,26 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)
+
+        # Create users table for Readers
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            full_name VARCHAR(100) NOT NULL,
+            username VARCHAR(50) NOT NULL UNIQUE,
+            phone_number VARCHAR(20),
+            password_hash VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """)
+        
         db.commit()
         cursor.close()
         db.close()
-        print("Database initialized and 'writers' table ready!")
+        print("Database tables initialized successfully!")
     except Exception as e:
         print("Database auto-init warning:", str(e))
 
-# Automatically create the missing table when Render starts the app
 init_db()
 
 otp_store = {}
@@ -108,52 +122,41 @@ def register_writer():
         db = get_db_connection()
         cursor = db.cursor()
         
-        query = """
-        INSERT INTO writers (full_name, username, phone_number, password_hash)
-        VALUES (%s, %s, %s, %s)
-        """
+        query = "INSERT INTO writers (full_name, username, phone_number, password_hash) VALUES (%s, %s, %s, %s)"
         cursor.execute(query, (full_name, username, phone_number, hashed_password))
         db.commit()
         
         cursor.close()
         db.close()
         return jsonify({'success': True, 'message': 'Writer registered successfully!'})
-    except mysql.connector.Error as err:
-        return jsonify({'success': False, 'message': f"Database Error: {str(err)}"}), 500
     except Exception as err:
         return jsonify({'success': False, 'message': f"Server Error: {str(err)}"}), 500
 
-# 3. Upload Book Endpoint
-@app.route('/api/add-book', methods=['POST'])
-def add_book():
+# 3. Register Reader/User Endpoint
+@app.route('/api/register-user', methods=['POST'])
+def register_user():
     try:
         data = request.get_json(force=True, silent=True) or {}
-        title = data.get('title')
-        author_name = data.get('author') or data.get('author_name')
-        genre = data.get('genre', 'General')
-        synopsis = data.get('description') or data.get('synopsis', 'No synopsis provided.')
-        cover_url = data.get('cover_image_url') or data.get('cover_url', 'https://via.placeholder.com/150')
-        buy_price = data.get('price') or data.get('buy_price', 0.0)
-        writer_id = data.get('writer_id', 1)
+        full_name = data.get('full_name', '')
+        username = data.get('username', '')
+        phone_number = data.get('phone_number', '')
+        password = data.get('password', '')
 
-        if not title or not author_name:
-            return jsonify({'success': False, 'message': 'Title and Author are required'}), 400
+        if not password or not username:
+            return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+
+        hashed_password = werkzeug.security.generate_password_hash(password)
 
         db = get_db_connection()
         cursor = db.cursor()
         
-        query = """
-        INSERT INTO books (title, author_name, genre, synopsis, cover_url, buy_price, writer_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (title, author_name, genre, synopsis, cover_url, buy_price, writer_id))
+        query = "INSERT INTO users (full_name, username, phone_number, password_hash) VALUES (%s, %s, %s, %s)"
+        cursor.execute(query, (full_name, username, phone_number, hashed_password))
         db.commit()
         
         cursor.close()
         db.close()
-        return jsonify({'success': True, 'message': 'Book added to MySQL successfully!'})
-    except mysql.connector.Error as err:
-        return jsonify({'success': False, 'message': f"Database Error: {str(err)}"}), 500
+        return jsonify({'success': True, 'message': 'User registered successfully!'})
     except Exception as err:
         return jsonify({'success': False, 'message': f"Server Error: {str(err)}"}), 500
 

@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const mode = sessionStorage.getItem("authMode");
     const role = sessionStorage.getItem("pendingRole") || "user"; // Defaults to reader/user
 
-    // Helper to route user based on their selected role
+    // Route user based on their selected role
     function redirectBasedOnRole() {
         if (role === "writer") {
             window.location.href = "writer_dashboard.html";
         } else {
-            window.location.href = "user_dashboard.html";
+            window.location.href = "userdashboard.html"; // Redirects to reader userdashboard.html
         }
     }
 
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Helper to send OTP from backend
+    // Send OTP from backend
     async function sendOTP() {
         if (!phone) {
             alert("No phone number found. Please register or log in again.");
@@ -56,24 +56,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Automatically send OTP when page loads
     sendOTP();
 
-    // Resend OTP button handler
     btnResend.addEventListener("click", (e) => {
         e.preventDefault();
         sendOTP();
     });
 
-    // Form submission handler
     otpForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Combine the 4 digit input boxes into a single code string
         const otpCode = Array.from(digits).map(input => input.value).join("");
 
         try {
-            // Verify OTP with backend
             const res = await fetch("/api/verify-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -83,10 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (result.success) {
                 if (mode === "register") {
-                    // Decide endpoint based on role
                     const targetEndpoint = role === "writer" ? "/api/register-writer" : "/api/register-user";
 
-                    // Complete registration in MySQL backend
                     const regRes = await fetch(targetEndpoint, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
