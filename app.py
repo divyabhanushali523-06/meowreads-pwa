@@ -17,15 +17,40 @@ def get_db_connection():
         'port': int(os.environ.get('DB_PORT', 3306))
     }
     
-    # Enable SSL for Aiven / Cloud MySQL databases
     if config['host'] != 'localhost':
         config['ssl_disabled'] = False
         
     return mysql.connector.connect(**config)
 
+def init_db():
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS writers (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            full_name VARCHAR(100) NOT NULL,
+            username VARCHAR(50) NOT NULL UNIQUE,
+            phone_number VARCHAR(20),
+            birthdate DATE,
+            password_hash VARCHAR(255) NOT NULL,
+            bio TEXT,
+            avatar_url VARCHAR(255) DEFAULT 'https://cdn-icons-png.flaticon.com/512/616/616430.png',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """)
+        db.commit()
+        cursor.close()
+        db.close()
+        print("Database initialized and 'writers' table ready!")
+    except Exception as e:
+        print("Database auto-init warning:", str(e))
+
+# Automatically create the missing table when Render starts the app
+init_db()
+
 otp_store = {}
 
-# Serve static HTML/JS/CSS files from the root directory
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
@@ -48,7 +73,6 @@ def send_otp():
         print(f"\n==========================================\n MOCK OTP FOR {phone}: [{code}] \n==========================================\n")
         return jsonify({'message': 'OTP sent successfully!', 'debug_otp': code})
     except Exception as e:
-        print("Error in send_otp:", str(e))
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/verify-otp', methods=['POST'])
@@ -64,7 +88,6 @@ def verify_otp():
             return jsonify({'success': True, 'message': 'Verified successfully!'})
         return jsonify({'success': False, 'message': 'Invalid OTP code'}), 400
     except Exception as e:
-        print("Error in verify_otp:", str(e))
         return jsonify({'success': False, 'message': str(e)}), 500
 
 # 2. Register Writer Endpoint
@@ -96,10 +119,8 @@ def register_writer():
         db.close()
         return jsonify({'success': True, 'message': 'Writer registered successfully!'})
     except mysql.connector.Error as err:
-        print("Database Registration Error:", err)
         return jsonify({'success': False, 'message': f"Database Error: {str(err)}"}), 500
     except Exception as err:
-        print("Registration Error:", err)
         return jsonify({'success': False, 'message': f"Server Error: {str(err)}"}), 500
 
 # 3. Upload Book Endpoint
@@ -132,10 +153,8 @@ def add_book():
         db.close()
         return jsonify({'success': True, 'message': 'Book added to MySQL successfully!'})
     except mysql.connector.Error as err:
-        print("Database Add Book Error:", err)
         return jsonify({'success': False, 'message': f"Database Error: {str(err)}"}), 500
     except Exception as err:
-        print("Add Book Error:", err)
         return jsonify({'success': False, 'message': f"Server Error: {str(err)}"}), 500
 
 if __name__ == '__main__':
