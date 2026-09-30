@@ -619,74 +619,59 @@ body {
     border: 1px solid var(--border-color) !important;
 }
 
-/* Base Mobile Styling for Bottom Nav */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 65px;
-    background: var(--card-bg, #ffffff);
-    border-top: 1px solid var(--border-color, #f0f0f0);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 999;
+/* ========================================================
+   1. AUTHENTICATION PAGES (Login, Register, OTP, Welcome)
+   ======================================================== */
+body.welcome-body {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-.bottom-nav .nav-item {
-    background: none;
-    border: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 6px 8px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.bottom-nav .nav-icon {
-    font-size: 18px;
-}
-
-.bottom-nav .nav-label {
-    font-size: 12px;
-    font-weight: 500;
-    margin-top: 2px;
+body.welcome-body main,
+body.welcome-body .welcome-container {
+    margin: 0 auto !important; /* Force true center alignment */
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 /* ========================================================
-   DESKTOP / LAPTOP PWA ENHANCEMENTS (ONLY FOR DASHBOARDS)
+   2. DESKTOP / LAPTOP PWA SIDEBAR (Only for Dashboards)
    ======================================================== */
 @media screen and (min-width: 769px) {
-    /* Converts bottom bar into a prominent sidebar ONLY on dashboard pages */
+    /* Convert bottom nav to desktop sidebar */
     body.dashboard-body .bottom-nav {
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: auto;
-        width: 240px;
-        height: 100vh;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: stretch;
-        padding: 80px 16px 20px 16px;
-        border-top: none;
-        border-right: 1px solid var(--border-color, #ffe4e6);
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
-        background: #ffffff;
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        width: 240px !important;
+        height: 100vh !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        padding: 80px 16px 20px 16px !important;
+        border-top: none !important;
+        border-right: 2px solid #ffe4e6 !important;
+        background: #ffffff !important;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.04) !important;
+        z-index: 1000 !important;
     }
 
     body.dashboard-body .bottom-nav .nav-item {
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 14px;
-        padding: 12px 16px;
-        margin-bottom: 6px;
-        width: 100%;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 14px !important;
+        padding: 12px 16px !important;
+        margin-bottom: 8px !important;
+        width: 100% !important;
+        border-radius: 12px !important;
     }
 
     body.dashboard-body .bottom-nav .nav-icon {
@@ -695,16 +680,15 @@ body {
 
     body.dashboard-body .bottom-nav .nav-label {
         font-size: 15px !important;
-        font-weight: 600;
+        font-weight: 600 !important;
     }
 
     body.dashboard-body .bottom-nav .nav-item:hover {
-        background-color: #fff1f2;
+        background-color: #fff1f2 !important;
     }
 
     body.dashboard-body .bottom-nav .nav-item.active {
-        background-color: #e11d48;
-        border-radius: 10px;
+        background-color: #e11d48 !important;
     }
 
     body.dashboard-body .bottom-nav .nav-item.active .nav-label,
@@ -712,16 +696,10 @@ body {
         color: #ffffff !important;
     }
 
-    /* Shift content right ONLY on dashboard pages */
+    /* Shift main content on dashboard only */
     body.dashboard-body .dashboard-content,
-    body.dashboard-body main.dashboard-content {
-        margin-left: 250px !important;
-        padding-bottom: 30px;
-    }
-
-    /* Prevent auth pages (login, OTP, register) from taking the left margin */
-    body.welcome-body main {
-        margin-left: auto !important;
-        margin-right: auto !important;
+    body.dashboard-body main {
+        margin-left: 260px !important;
+        padding-bottom: 40px !important;
     }
 }
