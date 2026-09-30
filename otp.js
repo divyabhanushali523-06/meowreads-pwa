@@ -4,6 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnResend = document.getElementById("btnResend");
     const phone = sessionStorage.getItem("pendingPhone");
     const mode = sessionStorage.getItem("authMode");
+    const role = sessionStorage.getItem("pendingRole") || "user"; // Defaults to reader/user
+
+    // Helper to route user based on their selected role
+    function redirectBasedOnRole() {
+        if (role === "writer") {
+            window.location.href = "writer_dashboard.html";
+        } else {
+            window.location.href = "user_dashboard.html";
+        }
+    }
 
     // Auto-focus move to next input box when typing digit
     digits.forEach((input, index) => {
@@ -73,8 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (result.success) {
                 if (mode === "register") {
+                    // Decide endpoint based on role
+                    const targetEndpoint = role === "writer" ? "/api/register-writer" : "/api/register-user";
+
                     // Complete registration in MySQL backend
-                    const regRes = await fetch("/api/register-writer", {
+                    const regRes = await fetch(targetEndpoint, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -89,14 +102,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (regData.success) {
                         alert("Account registered successfully!");
                         sessionStorage.clear();
-                        window.location.href = "writer_dashboard.html";
+                        redirectBasedOnRole();
                     } else {
                         alert("Registration Error: " + (regData.message || regData.error));
                     }
                 } else {
                     alert("Login successful!");
                     sessionStorage.clear();
-                    window.location.href = "writer_dashboard.html";
+                    redirectBasedOnRole();
                 }
             } else {
                 alert("Invalid OTP code. Please try again.");
