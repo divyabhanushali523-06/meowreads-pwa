@@ -7,13 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = sessionStorage.getItem("pendingRole") || "user"; // Defaults to reader/user
 
     // Route user based on their selected role
-    function redirectBasedOnRole() {
-        if (role === "writer") {
-            window.location.href = "writer_dashboard.html";
-        } else {
-            window.location.href = "userdashboard.html"; // Redirects to reader userdashboard.html
-        }
+   // Helper to route user based on their selected role
+function redirectBasedOnRole() {
+    if (role === "writer") {
+        window.location.href = "writer_dashboard.html";
+    } else {
+        // Change this line to match your EXACT user dashboard filename:
+        window.location.href = "user_dashboard.html"; // <-- Check if your file is user_dashboard.html or userdashboard.html
     }
+}
 
     // Auto-focus move to next input box when typing digit
     digits.forEach((input, index) => {
