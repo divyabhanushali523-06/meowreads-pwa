@@ -684,3 +684,74 @@ body {
     background: var(--accent-color) !important;
     color: #ffffff !important;
 }
+
+/* ==========================================
+   DESKTOP & LAPTOP ADAPTIVE NAVIGATION (PWA)
+   ========================================== */
+@media screen and (min-width: 769px) {
+    /* Convert bottom nav into a fixed Desktop Sidebar */
+    .bottom-nav {
+        top: 60px; /* Sits right below header */
+        left: 0;
+        bottom: 0;
+        width: 240px; /* Prominent sidebar width */
+        height: calc(100vh - 60px);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 20px 12px;
+        background: #ffffff;
+        border-top: none;
+        border-right: 2px solid #ffe4e6;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.04);
+        z-index: 1000;
+    }
+
+    /* Transform nav buttons into wide, readable desktop items */
+    .bottom-nav .nav-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 14px;
+        padding: 12px 18px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        transition: all 0.25s ease;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    /* Increase Icon & Font Sizes for Laptop View */
+    .bottom-nav .nav-icon {
+        font-size: 22px !important;
+    }
+
+    .bottom-nav .nav-label {
+        font-size: 15px !important;
+        font-weight: 600;
+        color: #4a4a4a;
+    }
+
+    /* Hover & Active States for Desktop */
+    .bottom-nav .nav-item:hover {
+        background-color: #fff1f2;
+        transform: translateX(4px);
+    }
+
+    .bottom-nav .nav-item.active {
+        background-color: #e11d48;
+        color: #ffffff;
+    }
+
+    .bottom-nav .nav-item.active .nav-label,
+    .bottom-nav .nav-item.active .nav-icon {
+        color: #ffffff !important;
+    }
+
+    /* Push main dashboard content to the right of the sidebar */
+    .dashboard-content {
+        margin-left: 250px;
+        padding: 30px;
+        padding-bottom: 40px; /* Eliminates bottom padding overflow */
+    }
+}

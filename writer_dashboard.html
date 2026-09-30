@@ -7,7 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
+
     <style>
         :root {
             --primary-color: #fbdbe2;
@@ -513,40 +514,40 @@
     </div>
 
     <!-- Bottom Navigation Bar for Writers -->
-    <nav class="bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-around: space-around; align-items: center; z-index: 999;">
-        <button class="nav-item active" onclick="showWriterSection('home')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">🏠</span>
-            <span class="nav-label" style="font-size: 11px;">Home</span>
-        </button>
-        <button class="nav-item" onclick="showWriterSection('cart')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">🛒</span>
-            <span class="nav-label" style="font-size: 11px;">Cart</span>
-        </button>
-        <button class="nav-item" onclick="showWriterSection('library')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">📚</span>
-            <span class="nav-label" style="font-size: 11px;">Library</span>
-        </button>
-        <button class="nav-item" onclick="showWriterSection('analytics')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">📊</span>
-            <span class="nav-label" style="font-size: 11px;">Analytics</span>
-        </button>
-        <button class="nav-item" onclick="showWriterSection('post')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">➕</span>
-            <span class="nav-label" style="font-size: 11px;">Post</span>
-        </button>
-        <button class="nav-item" onclick="showWriterSection('manage')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">🛠️</span>
-            <span class="nav-label" style="font-size: 11px;">Manage</span>
-        </button>
-        <button class="nav-item" onclick="showWriterSection('inbox')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">🔔</span>
-            <span class="nav-label" style="font-size: 11px;">Inbox</span>
-        </button>
-        <button class="nav-item" onclick="showWriterSection('profile')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-            <span class="nav-icon">⚙️</span>
-            <span class="nav-label" style="font-size: 11px;">Profile</span>
-        </button>
-    </nav>
+    <nav class="bottom-nav">
+    <button class="nav-item active" onclick="showWriterSection('home')">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" onclick="showWriterSection('cart')">
+        <span class="nav-icon">🛒</span>
+        <span class="nav-label">Cart</span>
+    </button>
+    <button class="nav-item" onclick="showWriterSection('library')">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">Library</span>
+    </button>
+    <button class="nav-item" onclick="showWriterSection('analytics')">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Analytics</span>
+    </button>
+    <button class="nav-item" onclick="showWriterSection('post')">
+        <span class="nav-icon">➕</span>
+        <span class="nav-label">Post</span>
+    </button>
+    <button class="nav-item" onclick="showWriterSection('manage')">
+        <span class="nav-icon">🛠️</span>
+        <span class="nav-label">Manage</span>
+    </button>
+    <button class="nav-item" onclick="showWriterSection('inbox')">
+        <span class="nav-icon">🔔</span>
+        <span class="nav-label">Inbox</span>
+    </button>
+    <button class="nav-item" onclick="showWriterSection('profile')">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Profile</span>
+    </button>
+</nav>
 
     <script src="js/dashboard.js"></script>
     <script>
