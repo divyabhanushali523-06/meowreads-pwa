@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Function to request OTP
 async function requestMockOTP(phoneNumber) {
-    const res = await fetch('http://localhost:5000/api/send-otp', {
+    const res = await fetch('/api/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone_number: phoneNumber })
@@ -30,7 +30,7 @@ async function requestMockOTP(phoneNumber) {
 
 // Function to verify OTP
 async function verifyMockOTP(phoneNumber, userEnteredCode) {
-    const res = await fetch('http://localhost:5000/api/verify-otp', {
+    const res = await fetch('/api/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone_number: phoneNumber, otp: userEnteredCode })

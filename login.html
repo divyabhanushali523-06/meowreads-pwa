@@ -51,45 +51,7 @@
 
         <p class="auth-switch">Don't have an account? <a href="register.html">Sign up</a></p>
     </main>
-    <script>
-        // Step 1: Send OTP request
-async function handleSendOTP() {
-    const phoneInput = document.getElementById('loginPhone').value;
 
-    const response = await fetch('/api/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone_number: phoneInput })
-    });
-
-    const result = await response.json();
-    if (response.ok) {
-        alert(`OTP sent! Debug Code: ${result.debug_otp}`);
-    } else {
-        alert(result.error || 'Failed to send OTP');
-    }
-}
-
-// Step 2: Verify entered OTP
-async function handleVerifyOTP() {
-    const phoneInput = document.getElementById('loginPhone').value;
-    const otpInput = document.getElementById('otp-input') ? document.getElementById('otp-input').value : '';
-
-    const response = await fetch('/api/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone_number: phoneInput, otp: otpInput })
-    });
-
-    const result = await response.json();
-    if (result.success) {
-        alert('OTP Verified! Logging in...');
-        // Proceed to redirect or show dashboard
-    } else {
-        alert('Invalid OTP code. Try again.');
-    }
-}
-    </script>
     <script src="login.js"></script>
 </body>
 </html>
