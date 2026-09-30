@@ -9,7 +9,6 @@ app = Flask(__name__, static_folder='.')
 CORS(app)
 
 def get_db_connection():
-    # Read environment variables dynamically per connection
     config = {
         'host': os.environ.get('DB_HOST', 'localhost'),
         'user': os.environ.get('DB_USER', 'root'),
@@ -18,15 +17,15 @@ def get_db_connection():
         'port': int(os.environ.get('DB_PORT', 3306))
     }
     
-    # Enforce SSL required for remote databases (Aiven cloud)
+    # Enable SSL for Aiven / Cloud MySQL databases
     if config['host'] != 'localhost':
-        config['ssl_mode'] = 'REQUIRED'
+        config['ssl_disabled'] = False
         
     return mysql.connector.connect(**config)
 
 otp_store = {}
 
-# Serve HTML files directly from root folder
+# Serve static HTML/JS/CSS files from the root directory
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
