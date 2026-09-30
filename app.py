@@ -71,7 +71,23 @@ def index():
 
 @app.route('/<path:path>')
 def serve_static(path):
-    return send_from_directory('.', path)
+    # Handle user dashboard filename mismatches automatically
+    if path in ['userdashboard.html', 'user_dashboard.html']:
+        for fname in ['user_dashboard.html', 'userdashboard.html']:
+            if os.path.exists(fname):
+                return send_from_directory('.', fname)
+
+    # Handle writer dashboard filename mismatches automatically
+    if path in ['writerdashboard.html', 'writer_dashboard.html']:
+        for fname in ['writer_dashboard.html', 'writerdashboard.html']:
+            if os.path.exists(fname):
+                return send_from_directory('.', fname)
+
+    # Serve requested static file if it exists
+    if os.path.exists(path):
+        return send_from_directory('.', path)
+        
+    return send_from_directory('.', 'index.html')
 
 # 1. OTP Endpoints
 @app.route('/api/send-otp', methods=['POST'])
