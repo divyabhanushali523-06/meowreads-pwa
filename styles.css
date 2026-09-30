@@ -685,73 +685,104 @@ body {
     color: #ffffff !important;
 }
 
+/* Base Mobile Styles for Bottom Nav */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+    background: var(--card-bg, #ffffff);
+    border-top: 1px solid var(--border-color, #f0f0f0);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 999;
+}
+
+.bottom-nav .nav-item {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.bottom-nav .nav-icon {
+    font-size: 18px;
+}
+
+.bottom-nav .nav-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
 /* ==========================================
-   DESKTOP & LAPTOP ADAPTIVE NAVIGATION (PWA)
+   DESKTOP / LAPTOP PWA ENHANCEMENTS (min-width: 769px)
    ========================================== */
 @media screen and (min-width: 769px) {
-    /* Convert bottom nav into a fixed Desktop Sidebar */
+    /* Converts bottom bar into a prominent left sidebar */
     .bottom-nav {
-        top: 60px; /* Sits right below header */
-        left: 0;
+        top: 0;
         bottom: 0;
-        width: 240px; /* Prominent sidebar width */
-        height: calc(100vh - 60px);
+        left: 0;
+        right: auto;
+        width: 230px;
+        height: 100vh;
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
-        padding: 20px 12px;
-        background: #ffffff;
+        padding: 80px 16px 20px 16px; /* 80px top padding accounts for header */
         border-top: none;
-        border-right: 2px solid #ffe4e6;
-        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.04);
-        z-index: 1000;
+        border-right: 1px solid var(--border-color, #e5e7eb);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.03);
     }
 
-    /* Transform nav buttons into wide, readable desktop items */
     .bottom-nav .nav-item {
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
-        gap: 14px;
-        padding: 12px 18px;
-        margin-bottom: 8px;
-        border-radius: 12px;
-        transition: all 0.25s ease;
+        gap: 12px;
+        padding: 12px 16px;
+        margin-bottom: 6px;
         width: 100%;
-        cursor: pointer;
     }
 
-    /* Increase Icon & Font Sizes for Laptop View */
+    /* Enlarge Icons and Text for Desktop */
     .bottom-nav .nav-icon {
-        font-size: 22px !important;
+        font-size: 22px;
     }
 
     .bottom-nav .nav-label {
-        font-size: 15px !important;
+        font-size: 15px;
         font-weight: 600;
-        color: #4a4a4a;
     }
 
-    /* Hover & Active States for Desktop */
+    /* Hover & Active Highlight States */
     .bottom-nav .nav-item:hover {
-        background-color: #fff1f2;
-        transform: translateX(4px);
+        background-color: rgba(0, 0, 0, 0.05);
     }
 
     .bottom-nav .nav-item.active {
-        background-color: #e11d48;
-        color: #ffffff;
+        background-color: var(--primary-color, #e11d48);
+        border-radius: 10px;
     }
 
     .bottom-nav .nav-item.active .nav-label,
     .bottom-nav .nav-item.active .nav-icon {
-        color: #ffffff !important;
+        color: #ffffff;
     }
 
-    /* Push main dashboard content to the right of the sidebar */
-    .dashboard-content {
-        margin-left: 250px;
-        padding: 30px;
-        padding-bottom: 40px; /* Eliminates bottom padding overflow */
+    /* Adjust main content body so sidebar doesn't overlap it */
+    .dashboard-content, 
+    main {
+        margin-left: 230px;
+        padding-bottom: 30px;
     }
 }
