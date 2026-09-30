@@ -9,14 +9,19 @@ app = Flask(__name__, static_folder='.')
 CORS(app)
 
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'root',
-    'database': 'meowreadspwa_db'
+    'host': os.environ.get('DB_HOST', 'localhost'),
+    'user': os.environ.get('DB_USER', 'root'),
+    'password': os.environ.get('DB_PASSWORD', 'root'),
+    'database': os.environ.get('DB_NAME', 'defaultdb'),
+    'port': int(os.environ.get('DB_PORT', 3306))
 }
 
 def get_db_connection():
-    return mysql.connector.connect(**DB_CONFIG)
+    config = DB_CONFIG.copy()
+    # Force SSL for cloud database hosts like Aiven
+    if config['host'] != 'localhost':
+        config['ssl_mode'] = 'REQUIRED'
+    return mysql.connector.connect(**config)
 
 otp_store = {}
 
@@ -118,4 +123,5 @@ def add_book():
         return jsonify({'success': False, 'message': str(err)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
