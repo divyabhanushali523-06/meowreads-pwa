@@ -619,73 +619,7 @@ body {
     border: 1px solid var(--border-color) !important;
 }
 
-/* ==========================================================================
-   BUTTON FIXES (LIBRARY PILLS & AMBIENCE BUTTONS)
-   ========================================================================== */
-
-/* Library Filter Pills */
-.tab-pills {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.tab-pills .pill {
-    padding: 8px 18px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    background: var(--card-bg);
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.tab-pills .pill.active, .tab-pills .pill:hover {
-    background: var(--primary-color);
-    color: var(--text-primary);
-    border-color: var(--accent-color);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-/* Ambience Audio Rows & Compact Buttons */
-.audio-track-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-}
-
-.audio-track-row span {
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.audio-btn {
-    width: 100px !important;
-    min-width: 100px !important;
-    max-width: 100px !important;
-    padding: 6px 12px !important;
-    border-radius: 20px !important;
-    font-size: 13px !important;
-    text-align: center;
-    border: 1px solid var(--accent-color) !important;
-    background: var(--card-bg) !important;
-    color: var(--text-primary) !important;
-    cursor: pointer;
-}
-
-.audio-btn.primary-btn {
-    background: var(--accent-color) !important;
-    color: #ffffff !important;
-}
-
-/* Base Mobile Styles for Bottom Nav */
+/* Base Mobile Styling for Bottom Nav */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -723,66 +657,71 @@ body {
     margin-top: 2px;
 }
 
-/* ==========================================
-   DESKTOP / LAPTOP PWA ENHANCEMENTS (min-width: 769px)
-   ========================================== */
+/* ========================================================
+   DESKTOP / LAPTOP PWA ENHANCEMENTS (ONLY FOR DASHBOARDS)
+   ======================================================== */
 @media screen and (min-width: 769px) {
-    /* Converts bottom bar into a prominent left sidebar */
-    .bottom-nav {
+    /* Converts bottom bar into a prominent sidebar ONLY on dashboard pages */
+    body.dashboard-body .bottom-nav {
         top: 0;
         bottom: 0;
         left: 0;
         right: auto;
-        width: 230px;
+        width: 240px;
         height: 100vh;
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
-        padding: 80px 16px 20px 16px; /* 80px top padding accounts for header */
+        padding: 80px 16px 20px 16px;
         border-top: none;
-        border-right: 1px solid var(--border-color, #e5e7eb);
-        box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+        border-right: 1px solid var(--border-color, #ffe4e6);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
+        background: #ffffff;
     }
 
-    .bottom-nav .nav-item {
+    body.dashboard-body .bottom-nav .nav-item {
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
-        gap: 12px;
+        gap: 14px;
         padding: 12px 16px;
         margin-bottom: 6px;
         width: 100%;
     }
 
-    /* Enlarge Icons and Text for Desktop */
-    .bottom-nav .nav-icon {
-        font-size: 22px;
+    body.dashboard-body .bottom-nav .nav-icon {
+        font-size: 22px !important;
     }
 
-    .bottom-nav .nav-label {
-        font-size: 15px;
+    body.dashboard-body .bottom-nav .nav-label {
+        font-size: 15px !important;
         font-weight: 600;
     }
 
-    /* Hover & Active Highlight States */
-    .bottom-nav .nav-item:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+    body.dashboard-body .bottom-nav .nav-item:hover {
+        background-color: #fff1f2;
     }
 
-    .bottom-nav .nav-item.active {
-        background-color: var(--primary-color, #e11d48);
+    body.dashboard-body .bottom-nav .nav-item.active {
+        background-color: #e11d48;
         border-radius: 10px;
     }
 
-    .bottom-nav .nav-item.active .nav-label,
-    .bottom-nav .nav-item.active .nav-icon {
-        color: #ffffff;
+    body.dashboard-body .bottom-nav .nav-item.active .nav-label,
+    body.dashboard-body .bottom-nav .nav-item.active .nav-icon {
+        color: #ffffff !important;
     }
 
-    /* Adjust main content body so sidebar doesn't overlap it */
-    .dashboard-content, 
-    main {
-        margin-left: 230px;
+    /* Shift content right ONLY on dashboard pages */
+    body.dashboard-body .dashboard-content,
+    body.dashboard-body main.dashboard-content {
+        margin-left: 250px !important;
         padding-bottom: 30px;
+    }
+
+    /* Prevent auth pages (login, OTP, register) from taking the left margin */
+    body.welcome-body main {
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 }
