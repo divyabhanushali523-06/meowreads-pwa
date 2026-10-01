@@ -6,16 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const mode = sessionStorage.getItem("authMode");
     const role = sessionStorage.getItem("pendingRole") || "user"; // Defaults to reader/user
 
-    // Route user based on their selected role
-   // Helper to route user based on their selected role
-function redirectBasedOnRole() {
-    if (role === "writer") {
-        window.location.href = "writer_dashboard.html";
-    } else {
-        // Change this line to match your EXACT user dashboard filename:
-        window.location.href = "user_dashboard.html"; // <-- Check if your file is user_dashboard.html or userdashboard.html
+    // Helper to route user based on their selected role
+    function redirectBasedOnRole() {
+        if (role === "writer") {
+            window.location.href = "writer_dashboard.html";
+        } else {
+            window.location.href = "userdashboard.html"; // Fixed filename to userdashboard.html
+        }
     }
-}
 
     // Auto-focus move to next input box when typing digit
     digits.forEach((input, index) => {
@@ -96,15 +94,17 @@ function redirectBasedOnRole() {
 
                     if (regData.success) {
                         alert("Account registered successfully!");
-                        sessionStorage.clear();
+                        // Redirect FIRST using the saved role variable, then clear storage
                         redirectBasedOnRole();
+                        sessionStorage.clear();
                     } else {
                         alert("Registration Error: " + (regData.message || regData.error));
                     }
                 } else {
                     alert("Login successful!");
-                    sessionStorage.clear();
+                    // Redirect FIRST using the saved role variable, then clear storage
                     redirectBasedOnRole();
+                    sessionStorage.clear();
                 }
             } else {
                 alert("Invalid OTP code. Please try again.");
