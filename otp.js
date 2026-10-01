@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const digits = document.querySelectorAll(".otp-digit");
     const otpForm = document.getElementById("otpForm");
     const btnResend = document.getElementById("btnResend");
+    
+    // Retrieve role and details before clearing session
     const phone = sessionStorage.getItem("pendingPhone");
     const mode = sessionStorage.getItem("authMode");
     const role = sessionStorage.getItem("pendingRole") || "user"; // Defaults to reader/user
@@ -11,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (role === "writer") {
             window.location.href = "writer_dashboard.html";
         } else {
-            window.location.href = "userdashboard.html"; // Fixed filename to userdashboard.html
+            window.location.href = "user_dashboard.html"; // Matches user_dashboard.html
         }
     }
 
@@ -94,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (regData.success) {
                         alert("Account registered successfully!");
-                        // Redirect FIRST using the saved role variable, then clear storage
                         redirectBasedOnRole();
                         sessionStorage.clear();
                     } else {
@@ -102,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 } else {
                     alert("Login successful!");
-                    // Redirect FIRST using the saved role variable, then clear storage
                     redirectBasedOnRole();
                     sessionStorage.clear();
                 }
